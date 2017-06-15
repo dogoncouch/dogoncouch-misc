@@ -35,12 +35,13 @@ for target in sys.argv[1:]:
 
     addr = target
     print('\n==== GeoIP data for %s ====' %addr)
+    
     try:
         ipaddr = socket.gethostbyname(addr)
-        print('IP: %s' %ipaddr)
+        print('%15s: %s' %('ip_addr', ipaddr))
 
         for x, y in geoquery.record_by_addr(ipaddr).items():
-            print('%s: %s' %(x, y))
+            print('%15s: %s' %(x, y))
 
     except socket.gaierror:
         print('%s: Name or service not known' %addr)
