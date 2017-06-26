@@ -34,6 +34,7 @@ geoquery = GeoIP.GeoIP(geodata, flags=0)
 for target in sys.argv[1:]:
 
     addr = target
+    attrs = {}
     print('\n==== GeoIP data for %s ====' %addr)
     
     try:
@@ -41,7 +42,11 @@ for target in sys.argv[1:]:
         print('%15s: %s' %('ip_addr', ipaddr))
 
         for x, y in geoquery.record_by_addr(ipaddr).items():
-            print('%15s: %s' %(x, y))
+            # print('%15s: %s' %(x, y))
+            attrs[x] = y
+
+        for x in sorted(attrs):
+            print('%15s: %s' %(x, attrs[x]))
 
     except socket.gaierror:
         print('%s: Name or service not known' %addr)
