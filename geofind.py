@@ -25,28 +25,86 @@
 import socket
 import GeoIP
 import sys
+from argparse import ArgumentParser
+
+__version__ = 0.1
 
 
-geodata = '/usr/share/GeoIP/GeoIPCity.dat'
-
-geoquery = GeoIP.GeoIP(geodata, flags=0)
-
-for target in sys.argv[1:]:
-
-    addr = target
-    attrs = {}
-    print('\n==== GeoIP data for %s ====' %addr)
+def parse_args():
+    """set config options"""
     
-    try:
-        ipaddr = socket.gethostbyname(addr)
-        print('%15s: %s' %('ip_addr', ipaddr))
+    parser = ArgumentParser()
 
-        for x, y in geoquery.record_by_addr(ipaddr).items():
-            # print('%15s: %s' %(x, y))
-            attrs[x] = y
+    parser.add_argument('--version', action='version',
+            version='%(prog)s ' + str(__version__))
+    parser.add_argument('-f', '--full',
+            action='store_true',
+            help=('get full GeoIP output'))
+    parser.add_argument('--data', action='store',
+            default='/usr/share/GeoIP/GeoIPCity.dat',
+            help=('set the .dat file to use'))
+    parser.add_argument('hosts',
+            metavar='host', nargs='*',
+            help=('set a host to look up'))
 
-        for x in sorted(attrs):
-            print('%15s: %s' %(x, attrs[x]))
+    args = parser.parse_args()
 
-    except socket.gaierror:
-        print('%s: Name or service not known' %addr)
+    return args
+
+
+
+def lookup(targets, data):
+
+    geoquery = GeoIP.GeoIP(data, flags=0)
+
+    for target in targets:
+        
+        addr = target
+        attrs = {}
+        print('\n==== GeoIP data for %s ====' %addr)
+        
+        try:
+            ipaddr = socket.gethostbyname(addr)
+            print('%s: %s' %('ip_addr', ipaddr))
+
+            for x, y in geoquery.record_by_addr(ipaddr).items():
+                attrs[x] = y
+
+            print('%s, %s, %s' %(attrs['city'], attrs['region'],
+                attrs['country_name']))
+
+        except socket.gaierror:
+            print('%s: Name or service not known' %addr)
+
+
+def lookup_full(targets, data):
+
+    geoquery = GeoIP.GeoIP(data, flags=0)
+
+    for target in targets:
+        
+        addr = target
+        attrs = {}
+        print('\n==== GeoIP data for %s ====' %addr)
+        
+        try:
+            ipaddr = socket.gethostbyname(addr)
+            print('%15s: %s' %('ip_addr', ipaddr))
+
+            for x, y in geoquery.record_by_addr(ipaddr).items():
+                attrs[x] = y
+
+            for x in sorted(attrs):
+                print('%15s: %s' %(x, attrs[x]))
+
+        except socket.gaierror:
+            print('%s: Name or service not known' %addr)
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    
+    if args.full:
+        lookup_full(args.hosts, args.data)
+    else:
+        lookup(args.hosts, args.data)
