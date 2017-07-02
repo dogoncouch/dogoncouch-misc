@@ -70,7 +70,7 @@ def lookup(targets, data):
             for x, y in geoquery.record_by_addr(ipaddr).items():
                 attrs[x] = y
 
-            print('%s, %s, %s' %(attrs['city'], attrs['region'],
+            print('%s, %s, %s' %(attrs['city'], attrs['region_name'],
                 attrs['country_name']))
 
         except socket.gaierror:
