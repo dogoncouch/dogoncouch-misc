@@ -78,7 +78,7 @@ def lookup_short(targets, data):
             print('%s: Name or service not known' %addr)
 
 
-def lookup_full(targets, data):
+def lookup(targets, data):
     """Get full GeoIP data"""
 
     geoquery = GeoIP.GeoIP(data, flags=0)
