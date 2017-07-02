@@ -31,7 +31,7 @@ __version__ = 0.1
 
 
 def parse_args():
-    """set config options"""
+    """Get arguments"""
     
     parser = ArgumentParser()
 
@@ -53,7 +53,8 @@ def parse_args():
 
 
 
-def lookup(targets, data):
+def lookup_short(targets, data):
+    """Get basic GeoIP data (city, region_name, country_name)"""
 
     geoquery = GeoIP.GeoIP(data, flags=0)
 
@@ -78,6 +79,7 @@ def lookup(targets, data):
 
 
 def lookup_full(targets, data):
+    """Get full GeoIP data"""
 
     geoquery = GeoIP.GeoIP(data, flags=0)
 
@@ -105,6 +107,6 @@ if __name__ == "__main__":
     args = parse_args()
     
     if args.full:
-        lookup_full(args.hosts, args.data)
-    else:
         lookup(args.hosts, args.data)
+    else:
+        lookup_short(args.hosts, args.data)
