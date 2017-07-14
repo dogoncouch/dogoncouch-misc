@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Script for setting up Ad-Hoc wifi network on a device
+
+# To Do: get settings from CLI/config file
+
+
 ifconfig wlan0 down
 macchanger -e wlan0
 iwconfig wlan0 mode Ad-Hoc
