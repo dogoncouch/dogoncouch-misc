@@ -30,7 +30,14 @@
 # To stop:
 # chmod -x runfile
 
+COUNT=0
 while [ -x runfile ] ; do
+    let COUNT+=1
+    echo
+    echo "========"
+    echo "Run #${COUNT}"
+    echo "========"
+    echo
     hydra -t 4 -l root -P ${1} ${2} ssh
 done
 
