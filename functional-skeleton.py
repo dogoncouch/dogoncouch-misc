@@ -31,67 +31,60 @@ import os.path
 __version__ = '0.1'
 
 
-    def __init__(:
-        """Initialize a total waste of CPU time"""
+def get_args():
+    """Set argument options"""
 
-        args = None
-        config = None
+    arg_parser = ArgumentParser()
 
+    arg_parser.add_argument('--version', action = 'version',
+            version = '%(prog)s ' + str(__version__))
+    arg_parser.add_argument('-c',
+            action = 'store', dest = 'config',
+            default = '/etc/nothing.conf',
+            help = ('set the config file'))
+    arg_parser.add_argument('--full',
+            action = 'store_true',
+            help = ('Do nothing to the fullest'))
+    arg_parser.add_argument('files',
+            type = FileType('r'), metavar='FILE', nargs = '?',
+            help = ('set a file with which to do nothing'))
 
-    def get_args(:
-        """Set argument options"""
+    args = arg_parser.parse_args()
 
-        arg_parser = ArgumentParser()
-
-        arg_parser.add_argument('--version', action = 'version',
-                version = '%(prog)s ' + str(__version__))
-        arg_parser.add_argument('-c',
-                action = 'store', dest = 'config',
-                default = '/etc/nothing.conf',
-                help = ('set the config file'))
-        arg_parser.add_argument('--full',
-                action = 'store_true',
-                help = ('Do nothing to the fullest'))
-        arg_parser.add_argument('files',
-                type = FileType('r'), metavar='FILE', nargs = '?',
-                help = ('set a file with which to do nothing'))
-
-        args = arg_parser.parse_args()
-
-        return args
+    return args
 
 
-    def get_config():
-        """Read the config file"""
+def get_config(configfile):
+    """Read the config file"""
 
-        config = ConfigParser()
-        
-        if os.path.isfile(args.config):
-            myconf = args.config
-            config.read(myconf)
+    config = ConfigParser()
+    
+    if os.path.isfile(configfile):
+        myconf = args.config
+        config.read(myconf)
 
-        else: return None
+    else: return None
 
 
 
-    def main_event():
-        """Do the actual nothing"""
-        pass
+def main_event():
+    """Do the actual nothing"""
+    pass
 
 
 
-    def run_script():
-        """Run the program that does nothing"""
-        try:
-            args = get_args()
-            config = get_config()
-            main_event()
+def run_script():
+    """Run the program that does nothing"""
+    try:
+        args = get_args()
+        config = get_config(args.config)
+        main_event()
 
-        except KeyboardInterrupt:
-            print('\nExiting on KeyboardInterrupt')
+    except KeyboardInterrupt:
+        print('\nExiting on KeyboardInterrupt')
 
-        except Exception as err:
-            print('Error: ' + str(err))
+    except Exception as err:
+        print('Error: ' + str(err))
 
     
     
