@@ -51,6 +51,8 @@ def wordlistsim(wordlist, host, user, service, runs,
     """Simulate a brute force attack by repeating a 10 word list"""
 
     for n in range(int(runs)):
+        print('Starting run ' + str(n + 1) + '/' + str(runs) + \
+                ' on host ' + host + '.')
         o = os.popen('hydra -t 4 -l ' + user + ' ' + hargs + ' -P ' + \
                 wordlist + ' ' + host + ' ' + service).read()
 
