@@ -44,7 +44,7 @@ def parse_args():
             default='/usr/share/GeoIP/GeoIPCity.dat',
             help=('set the .dat file to use'))
     parser.add_argument('hosts',
-            metavar='host', nargs='*',
+            metavar='HOST', nargs='*',
             help=('set a host to look up'))
 
     args = parser.parse_args()
@@ -101,6 +101,15 @@ def lookup(targets, data):
 
         except socket.gaierror:
             print('%s: Name or service not known' %addr)
+
+
+def main():
+    args = parse_args()
+    
+    if args.full:
+        lookup(args.hosts, args.data)
+    else:
+        lookup_short(args.hosts, args.data)
 
 
 if __name__ == "__main__":
