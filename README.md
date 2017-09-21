@@ -32,6 +32,13 @@ Adds your ssh rsa public key to `authorized_keys` on a remote host.
 usage: putkey.sh HOST
 ```
 
+### uselog.py
+Logs system statistics to syslog every 20 minutes (local1.info).
+
+```
+usage: uselog.py
+```
+
 ### wlsim.py
 Simulates brute force attacks by repeating the same wordlist.
 
