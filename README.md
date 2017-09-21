@@ -26,10 +26,10 @@ usage: myip.py
 ```
 
 ### putkey.sh
-Adds your ssh public key to `authorized_keys` on a remote host.
+Adds your ssh rsa public key to `authorized_keys` on a remote host.
 
 ```
-usage: putkey.ssh HOST
+usage: putkey.sh HOST
 ```
 
 ### wlsim.py
