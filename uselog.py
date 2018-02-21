@@ -27,15 +27,28 @@ import psutil
 from time import sleep
 import syslog
 
+__version__ = 0.1
+
+facilities = {
+        'local0': syslog.LOG_LOCAL0,
+        'local1': syslog.LOG_LOCAL1,
+        'local2': syslog.LOG_LOCAL2,
+        'local3': syslog.LOG_LOCAL3,
+        'local4': syslog.LOG_LOCAL4,
+        'local5': syslog.LOG_LOCAL5,
+        'local6': syslog.LOG_LOCAL6,
+        'local7': syslog.LOG_LOCAL7
+        }
+
 
 class SystemUsageLogger:
 
-    def __init__(self):
+    def __init__(self, facilityname):
 
-        syslog.openlog(facility=syslog.LOG_LOCAL1)
+        syslog.openlog(facility=facilities[facilityname])
 
 
-    def do_watch(self, interval=20):
+    def do_watch(self, interval):
 
         while True:
             cpu = str(psutil.cpu_percent())
@@ -53,12 +66,32 @@ class SystemUsageLogger:
             sleep(interval * 60)
 
 
+def parse_args():
+    """Get arguments"""
+
+    parser = ArgumentParser()
+
+    parser.add_argument('--version', action='version',
+            version='%(prog)s ' + str(__version__))
+    parser.add_argument('-i', '--interval',
+            action='store', type=int, default=5
+            help=('set the logging interval'))
+    parser.add_argument('-f', '--facility',
+            action='store', type=int, default='local1'
+            help=('set logging facility (local0-7, default local1)'))
+
+    args = parser.parse_args()
+
+    return args
+
 
 def main():
+    args = parse_args()
     syswatch = SystemUsageLogger()
-    syswatch.do_watch()
+    syswatch.do_watch(args.interval)
 
 if __name__ == "__main__":
+    args = parse_args()
     syswatch = SystemUsageLogger()
-    syswatch.do_watch()
+    syswatch.do_watch(args.interval)
 
