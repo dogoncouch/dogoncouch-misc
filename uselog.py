@@ -88,11 +88,11 @@ def parse_args():
 
 def main():
     args = parse_args()
-    syswatch = SystemUsageLogger()
+    syswatch = SystemUsageLogger(args.facility)
     syswatch.do_watch(args.interval)
 
 if __name__ == "__main__":
     args = parse_args()
-    syswatch = SystemUsageLogger()
+    syswatch = SystemUsageLogger(args.facility)
     syswatch.do_watch(args.interval)
 
