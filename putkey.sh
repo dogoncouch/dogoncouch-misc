@@ -22,4 +22,36 @@
 #_OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #_SOFTWARE.
 
-cat ~/.ssh/id_rsa.pub | ssh ${1} "mkdir -p ~/.ssh && cat >>  ~/.ssh/authorized_keys"
+VERSION="0.1"
+
+usage() {
+    echo "Usage: ${0##*/} [-hv] [-f KEYFILE] [USER@]HOST"
+    echo "  -h                  Print this help message"
+    echo "  -v                  Print the version number"
+    echo "  -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)"
+}
+
+KEYFILE=~/.ssh/id_rsa.pub
+
+while getopts ":vhf:" o; do
+    case "${o}" in
+        f)
+            KEYFILE=${OPTARG}
+            ;;
+        v)
+            echo putkey-$VERSION
+            exit 0
+            ;;
+        h)
+            usage
+            exit 0
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+cat $KEYFILE | ssh ${1} "mkdir -p ~/.ssh && cat >>  ~/.ssh/authorized_keys"

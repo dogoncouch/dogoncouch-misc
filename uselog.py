@@ -74,10 +74,10 @@ def parse_args():
 
     parser.add_argument('--version', action='version',
             version='%(prog)s ' + str(__version__))
-    parser.add_argument('-i', '--interval',
+    parser.add_argument('--interval',
             action='store', type=int, default=5,
             help=('set the logging interval'))
-    parser.add_argument('-f', '--facility',
+    parser.add_argument('--facility',
             action='store', type=int, default='local1',
             help=('set logging facility (local0-7, default local1)'))
 
