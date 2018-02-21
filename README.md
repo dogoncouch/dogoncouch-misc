@@ -29,14 +29,23 @@ usage: myip.py
 Adds your ssh rsa public key to `authorized_keys` on a remote host.
 
 ```
-usage: putkey.sh HOST
+Usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
+  -h                  Print this help message
+  -v                  Print the version number
+  -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)
 ```
 
 ### uselog.py
 Logs system statistics to syslog every 20 minutes (local1.info).
 
 ```
-usage: uselog.py
+usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --version            show program's version number and exit
+  --interval INTERVAL  set the logging interval
+  --facility FACILITY  set logging facility (local0-7, default local1)
 ```
 
 ### wlsim.py
