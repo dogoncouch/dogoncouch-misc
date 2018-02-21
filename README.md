@@ -44,7 +44,7 @@ usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
 optional arguments:
   -h, --help           show this help message and exit
   --version            show program's version number and exit
-  --interval INTERVAL  set the logging interval
+  --interval INTERVAL  set logging interval in minutes (default 2)
   --facility FACILITY  set logging facility (local0-7, default local1)
 ```
 
