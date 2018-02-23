@@ -25,7 +25,8 @@
 
 from argparse import ArgumentParser
 from argparse import FileType
-import os.path
+from os import listdir, makedirs
+from os.path import isfile, isdir, join
 
 
 __version__ = '0.1'
@@ -47,7 +48,8 @@ end_html = """.</p>
 # This will not put a space before or after the identifier.
 
 # Usage example: python html-gen.py -i 123 filename.html
-
+# Usage example with full directories:
+# python html-gen.py --jpgdir pictures --outdir outhtml
 
 def get_args():
     """Set argument options"""
@@ -59,8 +61,14 @@ def get_args():
     arg_parser.add_argument('-i',
             action = 'store', dest = 'identifier',
             help = ('set the identifier'))
+    arg_parser.add_argument('--jpgdir',
+            action = 'store',
+            help = ('set a directory for image file input'))
+    arg_parser.add_argument('--outdir',
+            action = 'store', default = 'outhtml',
+            help = ('set a directory for html file output'))
     arg_parser.add_argument('file',
-            type = FileType('w'), metavar='FILE',
+            type = FileType('w'), metavar='FILE', nargs= '?',
             help = ('set the output file'))
 
     args = arg_parser.parse_args()
@@ -79,12 +87,27 @@ def write_html(outhtml, outfile):
     outfile.write(outhtml)
 
 
+def write_directory(jpgdir, outdir):
+    """Write a whole directory of html files from a directory of jpg files"""
+    if not isdir(outdir):
+        makedirs(outdir)
+    for f in listdir(jpgdir):
+        if isfile(join(jpgdir, f)) and f.endswith('.jpg'):
+            identifier = f[:-4]
+            with open(join(outdir, identifier + '.html'), 'w') as outfile:
+                outhtml = generate_html(f)
+                write_html(outhtml, outfile)
+
+
 def run_script():
     """Run the program"""
     try:
         args = get_args()
-        outhtml = generate_html(args.identifier)
-        write_html(outhtml, args.file)
+        if args.jpgdir:
+            write_directory(args.jpgdir, args.outdir)
+        else:
+            outhtml = generate_html(args.identifier)
+            write_html(outhtml, args.file)
 
     except KeyboardInterrupt:
         print('\nExiting on KeyboardInterrupt')
