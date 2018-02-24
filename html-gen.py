@@ -29,27 +29,14 @@ from os import listdir, makedirs
 from os.path import isfile, isdir, join
 
 
-__version__ = '0.1'
+__version__ = '0.2'
 
-# All HTML before identifier:
-start_html = """
-<head>
-    <title>TITLE</title>
-</head>
-<body>
-    <h1>Stuff</h1>
-    <p>The identifier is"""
-
-# All HTML after identifier:
-end_html = """.</p>
-    <p>Have a nice day!</p>
-</body>"""
-
+# Creates an HTML file or a directory of HTML files using starting HTML, an identifier, and ending HTML
 # This will not put a space before or after the identifier.
 
-# Usage example: python html-gen.py -i 123 filename.html
+# Usage example: python html-gen.py -i 123 filename.html --starthtml starter.html --endhtml ender.html
 # Usage example with full directories:
-# python html-gen.py --jpgdir pictures --outdir outhtml
+# python html-gen.py --jpgdir pictures --outdir outhtml --starthtml starter.html --endhtml ender.html
 
 def get_args():
     """Set argument options"""
@@ -70,15 +57,28 @@ def get_args():
     arg_parser.add_argument('file',
             type = FileType('w'), metavar='FILE', nargs= '?',
             help = ('set the output file'))
+    arg_parser.add_argument('--starthtml', 
+            type = FileType('r'), metavar='FILE',
+            default = 'starter.html', 
+            help = ('set the start HTML file (default: starter.html)'))
+    arg_parser.add_argument('--endhtml', 
+            type = FileType('r'), metavar='FILE', 
+            default = 'ender.html',
+            help = ('set the ending HTML file (default: ender.html)'))
 
     args = arg_parser.parse_args()
 
     return args
 
+def load_html(starthtml, endhtml):
+    """Load beginning and ending HTML to go in outpul file"""
+    start_html = starthtml.read()
+    end_html = endhtml.read()
+    return(start_html, end_html)    
 
-def generate_html(identifier):
+def generate_html(identifier, starthtml, endhtml):
     """Generate the html"""
-    outhtml = start_html + identifier + end_html
+    outhtml = starthtml + identifier + endhtml
     return outhtml
 
 
@@ -87,7 +87,7 @@ def write_html(outhtml, outfile):
     outfile.write(outhtml)
 
 
-def write_directory(jpgdir, outdir):
+def write_directory(jpgdir, outdir, starthtml, endhtml):
     """Write a whole directory of html files from a directory of jpg files"""
     if not isdir(outdir):
         makedirs(outdir)
@@ -95,7 +95,7 @@ def write_directory(jpgdir, outdir):
         if isfile(join(jpgdir, f)) and f.endswith('.jpg'):
             identifier = f[:-4]
             with open(join(outdir, identifier + '.html'), 'w') as outfile:
-                outhtml = generate_html(f)
+                outhtml = generate_html(f, starthtml, endhtml)
                 write_html(outhtml, outfile)
 
 
@@ -103,10 +103,11 @@ def run_script():
     """Run the program"""
     try:
         args = get_args()
+        starthtml, endhtml = load_html(args.starthtml, args.endhtml)
         if args.jpgdir:
-            write_directory(args.jpgdir, args.outdir)
+            write_directory(args.jpgdir, args.outdir, starthtml, endhtml)
         else:
-            outhtml = generate_html(args.identifier)
+            outhtml = generate_html(args.identifier, starthtml, endhtml)
             write_html(outhtml, args.file)
 
     except KeyboardInterrupt:
