@@ -78,7 +78,7 @@ def parse_args():
             action='store', type=int, default=2,
             help=('set logging interval in minutes (default 2)'))
     parser.add_argument('--facility',
-            action='store', type=int, default='local1',
+            action='store', default='local1',
             help=('set logging facility (local0-7, default local1)'))
 
     args = parser.parse_args()
