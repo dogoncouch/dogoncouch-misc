@@ -55,7 +55,7 @@ class SystemUsageLogger:
             cpu = str(psutil.cpu_percent())
             mem = str(psutil.virtual_memory()[2])
 
-            msg = 'System usage: CPU: ' + cpu + '% Mem: ' + '%'
+            msg = 'System usage: CPU: ' + cpu + '% Mem: ' + mem + '%'
                     
             if not notemp:
                 with open('/sys/class/thermal/thermal_zone0/temp',
