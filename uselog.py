@@ -55,13 +55,14 @@ class SystemUsageLogger:
             cpu = str(psutil.cpu_percent())
             mem = str(psutil.virtual_memory()[2])
 
-            with open('/sys/class/thermal/thermal_zone0/temp', 'r') as f:
-                cputmpraw = float(f.read()) / 1000
-            cputmp = "%.1f'C" % cputmpraw
-
             msg = 'System usage: CPU: ' + cpu + '% Mem: ' + '%'
                     
             if not notemp:
+                with open('/sys/class/thermal/thermal_zone0/temp',
+                        'r') as f:
+                    cputmpraw = float(f.read()) / 1000
+                cputmp = "%.1f'C" % cputmpraw
+
                 msg += ' CPUTemp: ' + cputmp
         
             syslog.syslog(syslog.LOG_INFO, msg)
