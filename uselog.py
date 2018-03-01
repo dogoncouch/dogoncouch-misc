@@ -49,7 +49,7 @@ class SystemUsageLogger:
         syslog.openlog(facility=facilities[facilityname])
 
 
-    def do_watch(self, interval, notemp = False):
+    def do_watch(self, interval, tempfile, notemp = False):
 
         while True:
             cpu = str(psutil.cpu_percent())
@@ -58,7 +58,7 @@ class SystemUsageLogger:
             msg = 'System usage: CPU: ' + cpu + '% Mem: ' + mem + '%'
                     
             if not notemp:
-                with open('/sys/class/thermal/thermal_zone0/temp',
+                with open(tempfile,
                         'r') as f:
                     cputmpraw = float(f.read()) / 1000
                 cputmp = "%.1f'C" % cputmpraw
@@ -86,6 +86,10 @@ def parse_args():
     parser.add_argument('--notemp',
             action='store_true',
             help=('do not log CPU temperature'))
+    parser.add_argument('--tempfile',
+            action='store',
+            default='/sys/class/thermal/thermal_zone0/temp',
+            help=('set a file for temperature readings'))
 
     args = parser.parse_args()
 
@@ -95,10 +99,10 @@ def parse_args():
 def main():
     args = parse_args()
     syswatch = SystemUsageLogger(args.facility)
-    syswatch.do_watch(args.interval, notemp=args.notemp)
+    syswatch.do_watch(args.interval, args.tempfile, notemp=args.notemp)
 
 if __name__ == "__main__":
     args = parse_args()
     syswatch = SystemUsageLogger(args.facility)
-    syswatch.do_watch(args.interval, notemp=args.notemp)
+    syswatch.do_watch(args.interval, args.tempfile, notemp=args.notemp)
 
