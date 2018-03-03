@@ -133,8 +133,12 @@ class TrialsCore:
             for k in row.keys():
                 # Strip numbers from multiple controller outputs with translate
                 # while assembling row output
-                rowoutput += str(k).translate(translator) + ': ' + \
-                        str(row[k]) + ', '
+                if row[k] = 'false':
+                    rowoutput += str(k).translate(translator) + ': ' + \
+                            str(row[k]).strip("'") + ', '
+                else:
+                    rowoutput += str(k).translate(translator) + ': ' + \
+                            str(row[k]) + ', '
             rowoutput = rowoutput[:-2]
             rowoutput += '],\n'
             mainblock += rowoutput
