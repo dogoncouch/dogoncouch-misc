@@ -133,11 +133,7 @@ class TrialsCore:
             for k in row.keys():
                 # Strip numbers from multiple controller outputs with translate
                 # while assembling row output
-                if row[k] == 'false':
-                    rowoutput += str(k).translate(translator) + ': ' + \
-                            str(row[k]) + ', '
-                else:
-                    rowoutput += str(k).translate(translator) + ': ' + \
+                rowoutput += str(k).translate(translator) + ': ' + \
                             str(row[k]) + ', '
             rowoutput = rowoutput[:-2]
             rowoutput += '],\n'
@@ -158,6 +154,7 @@ class TrialsCore:
         # Fix double-escaped newlines (by cheating):
         #os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe 's/\\\\\\\\/\\\\/' " + self.args.out)
+        os.system("perl -i -pe 's/\'false\'/false/' " + self.args.out)
 
 
 
