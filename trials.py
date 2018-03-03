@@ -106,12 +106,12 @@ class TrialsCore:
                     numberset = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
                     if o[-1] in numberset:
                         o = o.translate(translator)
-                        if o in parsedrow[c]:
+                        if o in parsedrow[c].keys():
                             parsedrow[c][o].append(row[h])
                         else:
-                            parsedrow[c][o] = list(o)
+                            parsedrow[c][o] = [row[h]]
                     else:
-                        parsedrow[c][o] = row[h]
+                        parsedrow[c][o] = [row[h]]
                 else:
                     if not "identifiers" in parsedrow:
                         parsedrow["identifiers"] = {}
