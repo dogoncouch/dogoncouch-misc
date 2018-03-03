@@ -133,9 +133,9 @@ class TrialsCore:
             for k in row.keys():
                 # Strip numbers from multiple controller outputs with translate
                 # while assembling row output
-                if row[k] = 'false':
+                if row[k] == 'false':
                     rowoutput += str(k).translate(translator) + ': ' + \
-                            str(row[k]).strip("'") + ', '
+                            str(row[k]) + ', '
                 else:
                     rowoutput += str(k).translate(translator) + ': ' + \
                             str(row[k]) + ', '
