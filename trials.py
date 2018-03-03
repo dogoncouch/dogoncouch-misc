@@ -154,7 +154,7 @@ class TrialsCore:
         # Fix double-escaped newlines (by cheating):
         #os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe 's/\\\\\\\\/\\\\/' " + self.args.out)
-        os.system("perl -i -pe 's/\'false\'/false/' " + self.args.out)
+        os.system("perl -i -pe 's/\\'false\\'/false/' " + self.args.out)
 
 
 
