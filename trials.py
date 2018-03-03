@@ -39,7 +39,6 @@ class TrialsCore:
 
         self.args = None
         self.arg_parser = ArgumentParser()
-        self.config = None
 
 
     def get_args(self):
