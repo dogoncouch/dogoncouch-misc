@@ -111,7 +111,12 @@ class TrialsCore:
                         else:
                             parsedrow[c][o] = [row[h]]
                     else:
-                        parsedrow[c][o] = [row[h]]
+                        # Make sure some options are lists:
+                        listset = {'as'}
+                        if o in listset:
+                            parsedrow[c][o] = [row[h]]
+                        else:
+                            parsedrow[c][o] = row[h]
                 else:
                     if not "identifiers" in parsedrow:
                         parsedrow["identifiers"] = {}
