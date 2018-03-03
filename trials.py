@@ -90,6 +90,9 @@ class TrialsCore:
                 if not f in headerlist:
                     headerlist.append(f)
 
+        # Make translator to translate Message1, Message2, etc. to Message
+        translator = str.maketrans('', '', digits)
+
         # Parse rows into dictionaries
         parsedrows = []
         for row in datafields:
@@ -99,16 +102,22 @@ class TrialsCore:
                     c, o = headerfields[h].split(".")
                     if not c in parsedrow.keys():
                         parsedrow[c] = {}
-                    parsedrow[c][o] = row[h]
+                    # Convert Question.as1, Question.as2, etc to Question.as list
+                    numberset = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+                    if o[-1] in numberset:
+                        o = o.translate(translator)
+                        if o in parsedrow[c]:
+                            parsedrow[c][o].append(row[h])
+                        else:
+                            parsedrow[c][o] = list(o)
+                    else:
+                        parsedrow[c][o] = row[h]
                 else:
                     if not "identifiers" in parsedrow:
                         parsedrow["identifiers"] = {}
                     parsedrow["identifiers"][headerfields[h]] = row[h]
             parsedrows.append(parsedrow)
         
-        # Make translator to translate Message1, Message2, etc. to Message
-        translator = str.maketrans('', '', digits)
-
         # Assemble output
         mainblock = ''
         for row in parsedrows:
@@ -139,7 +148,8 @@ class TrialsCore:
             f.write(header + '\n' + mainblock[:-2])
 
         # Fix double-escaped newlines (by cheating):
-        os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
+        #os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
+        os.system("perl -i -pe 's/\\\\/\\/' " + self.args.out
 
 
 
