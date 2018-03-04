@@ -84,7 +84,7 @@ optional arguments:
   -h, --help  show this help message and exit
   --version   show program's version number and exit
   -i          replace newlines in-place
-  --reverse   replace \*nix newlines with windows newlines
+  --reverse   replace *nix newlines with windows newlines
   --out OUT   set an output file
 ```
 
