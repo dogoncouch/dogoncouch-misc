@@ -71,7 +71,7 @@ optional arguments:
 ```
 
 ### fix-newlines.py
-Switches newlines in a file between \r and \n.
+Switches newlines in a file between \r and \n. Mostly written for people who don't have access to GNU sed.
 
 ```
 usage: fix-newlines.py [-h] [--version] [-i] [--reverse] [--out OUT]
