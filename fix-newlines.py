@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # MIT License
 # 
@@ -59,29 +59,30 @@ def main_event(files, outfile=None, reverse=False, inplace=False):
     for f in files:
         if reverse:
             with open(f, 'r') as infile:
-                contents = infile.read()
+                contents = '\r'.join(infile.read().split('\n'))
             if inplace:
-                with open(f, 'r', newline='\r') as outf:
+                with open(f, 'w', newline='\r') as outf:
                     outf.write(contents)
             else:
                 if len(files) > 1:
                     print('Error: Cannot process more than one file " + \
                             "without -i option')
                 else:
-                    with open(outfile, 'r', newline='\r') as outf:
+                    with open(outfile, 'w', newline='\r') as outf:
                         outf.write(contents)
         else:
             with open(f, 'r', newline='\r') as infile:
-                contents = infile.read()
+                contents = '\n'.join(infile.read().split('\r'))
+            #print(contents)
             if inplace:
-                with open(f, 'r') as outf:
+                with open(f, 'w', newline='\n') as outf:
                     outf.write(contents)
             else:
                 if len(files) > 1:
                     print('Error: Cannot process more than one file " + \
                             "without -i option')
                 else:
-                    with open(outfile, 'r', newline='\r') as outf:
+                    with open(outfile, 'w', newline='\n') as outf:
                         outf.write(contents)
 
 
