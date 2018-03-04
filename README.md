@@ -70,6 +70,24 @@ optional arguments:
   --service SERVICE   set the service to target (default: ssh)
 ```
 
+### fix-newlines.py
+Switches newlines in a file between \r and \n.
+
+```
+usage: fix-newlines.py [-h] [--version] [-i] [--reverse] [--out OUT]
+                       [FILE [FILE ...]]
+
+positional arguments:
+  FILE        set a file to convert
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+  -i          replace newlines in-place
+  --reverse   replace \*nix newlines with windows newlines
+  --out OUT   set an output file
+```
+
 ## Skeleton scripts
 Script templates that do nothing really well.
 
