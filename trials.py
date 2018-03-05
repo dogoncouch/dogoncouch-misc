@@ -94,11 +94,14 @@ class TrialsCore:
 
         # Parse rows into dictionaries
         parsedrows = []
+        opts = set()
         for row in datafields:
             parsedrow = collections.OrderedDict()
             for h in range(len(headerfields)):
                 if "." in headerfields[h]:
                     c, o = headerfields[h].split(".")
+                    if not o in opts:
+                        opts.add(o)
                     if not c in parsedrow.keys():
                         parsedrow[c] = {}
                     # Convert Question.as1, Question.as2, etc to Question.as list
@@ -129,11 +132,11 @@ class TrialsCore:
             rowoutput = "// %s %s%s\n" % (identifiers['label'],
                     identifiers['item'], identifiers['condition'])
             rowoutput += '[["' + identifiers['label'] + \
-                    ', ' + identifiers['item'] + '], '
+                    '", ' + identifiers['item'] + '], '
             for k in row.keys():
                 # Strip numbers from multiple controller outputs with translate
                 # while assembling row output
-                rowoutput += str(k).translate(translator) + ': ' + \
+                rowoutput += '"' + str(k).translate(translator) + '": ' + \
                             str(row[k]) + ', '
             rowoutput = rowoutput[:-2]
             rowoutput += '],\n'
@@ -155,6 +158,9 @@ class TrialsCore:
         #os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe \"s/'false'/false/\" " + self.args.out)
+        for o in opts:
+            os.system("perl -i -pe \"s/'" + o + "'/" + o + "/\" " + \
+                    self.args.out)
 
 
 
