@@ -110,8 +110,6 @@ class TrialsCore:
                             parsedrow[c][o].append(row[h])
                         else:
                             parsedrow[c][o] = [row[h]]
-                    if not o in opts:
-                        opts.add(o)
                     else:
                         # Make sure some options are lists:
                         listset = {'as'}
@@ -119,6 +117,8 @@ class TrialsCore:
                             parsedrow[c][o] = [row[h]]
                         else:
                             parsedrow[c][o] = row[h]
+                    if not o in opts:
+                        opts.add(o)
                 else:
                     if not "identifiers" in parsedrow:
                         parsedrow["identifiers"] = {}
