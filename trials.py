@@ -117,6 +117,9 @@ class TrialsCore:
                             parsedrow[c][o] = [row[h]]
                         else:
                             parsedrow[c][o] = row[h]
+                        # Add include code for HTML options
+                        if o == 'html':
+                            parsedrow[c][o] = '{include: ' + row[h] + '}'
                     if not o in opts:
                         opts.add(o)
                 else:
