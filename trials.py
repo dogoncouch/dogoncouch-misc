@@ -100,8 +100,6 @@ class TrialsCore:
             for h in range(len(headerfields)):
                 if "." in headerfields[h]:
                     c, o = headerfields[h].split(".")
-                    if not o in opts:
-                        opts.add(o)
                     if not c in parsedrow.keys():
                         parsedrow[c] = {}
                     # Convert Question.as1, Question.as2, etc to Question.as list
@@ -112,6 +110,8 @@ class TrialsCore:
                             parsedrow[c][o].append(row[h])
                         else:
                             parsedrow[c][o] = [row[h]]
+                    if not o in opts:
+                        opts.add(o)
                     else:
                         # Make sure some options are lists:
                         listset = {'as'}
