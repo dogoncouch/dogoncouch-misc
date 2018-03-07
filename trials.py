@@ -117,6 +117,9 @@ class TrialsCore:
                             parsedrow[c][o] = [row[h]]
                         else:
                             parsedrow[c][o] = row[h]
+                        # Add include code for HTML options
+                        if o == 'html':
+                            parsedrow[c][o] = '{include: ' + row[h] + '}'
                     if not o in opts:
                         opts.add(o)
                 else:
@@ -154,14 +157,16 @@ class TrialsCore:
         with open(self.args.out, 'w') as f:
             f.write(header + '\n' + mainblock[:-2])
 
-        # Fix double-escaped newlines (by cheating):
+        # Fix double-escaped newlines, incorrect quotation marks around options and false correct options (by cheating):
         #os.system("sed -i 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe 's/\\\\\\\\/\\\\/' " + self.args.out)
         os.system("perl -i -pe \"s/'false'/false/\" " + self.args.out)
+        os.system("perl -i -pe \"s/'FALSE'/false/\" " + self.args.out)
+        os.system("perl -i -pe \"s/\'\{include/\{include/\" " + self.args.out)
+        os.system("perl -i -pe \"s/\}\'\}/\}\}/\" " + self.args.out)
         for o in opts:
             os.system("perl -i -pe \"s/'" + o + "'/" + o + "/\" " + \
                     self.args.out)
-
 
 
     def run_script(self):
