@@ -41,13 +41,14 @@ Logs system statistics to syslog (CPU usage, memory usage, CPU temperature).
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
-                 [--notemp] [--tempfile TEMPFILE]
+                 [--fahr] [--notemp] [--tempfile TEMPFILE]
 
 optional arguments:
   -h, --help           show this help message and exit
   --version            show program's version number and exit
-  --interval INTERVAL  set logging interval in minutes (default 1)
+  --interval INTERVAL  set logging interval in seconds (default 60)
   --facility FACILITY  set logging facility (local0-7, default local1)
+  --fahr               display temperature in Fahrenheit
   --notemp             do not log CPU temperature
   --tempfile TEMPFILE  set a file for temperature readings
 ```
