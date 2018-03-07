@@ -61,7 +61,12 @@ class SystemUsageLogger:
                 with open(tempfile,
                         'r') as f:
                     cputmpraw = float(f.read()) / 1000
-                cputmp = "%.1f'C" % cputmpraw
+                    if self.args.fahr:
+                        cputmpraw = cputmpraw * 9/5 + 32
+                if self.args.fahr:
+                    cputmp = "%.1f'F" % cputmpraw
+                else:
+                    cputmp = "%.1f'C" % cputmpraw
 
                 msg += ' CPUTemp: ' + cputmp
         
@@ -83,6 +88,9 @@ def parse_args():
     parser.add_argument('--facility',
             action='store', default='local1',
             help=('set logging facility (local0-7, default local1)'))
+    parser.add_argument('--fahr',
+            action='store_true',
+            help=('display temperature in Fahrenheit'))
     parser.add_argument('--notemp',
             action='store_true',
             help=('do not log CPU temperature'))

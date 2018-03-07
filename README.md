@@ -4,6 +4,7 @@ Miscellany
 ## Scripts
 
 ### geofind.py
+Requirements: geoip-python
 
 ```
 usage: geofind.py [-h] [--version] [-f] [--data DATA] [HOST [HOST ...]]
@@ -36,16 +37,19 @@ Usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
 ```
 
 ### uselog.py
-Logs system statistics to syslog every 20 minutes (local1.info).
+Logs system statistics to syslog (CPU usage, memory usage, CPU temperature).
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
+                 [--notemp] [--tempfile TEMPFILE]
 
 optional arguments:
   -h, --help           show this help message and exit
   --version            show program's version number and exit
-  --interval INTERVAL  set logging interval in minutes (default 2)
+  --interval INTERVAL  set logging interval in minutes (default 1)
   --facility FACILITY  set logging facility (local0-7, default local1)
+  --notemp             do not log CPU temperature
+  --tempfile TEMPFILE  set a file for temperature readings
 ```
 
 ### wlsim.py
