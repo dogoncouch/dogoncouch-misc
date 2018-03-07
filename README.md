@@ -27,7 +27,7 @@ usage: myip.py
 ```
 
 ### putkey.sh
-Adds your ssh rsa public key to `authorized_keys` on a remote host.
+Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
 
 ```
 Usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
