@@ -24,21 +24,19 @@
 
 from argparse import ArgumentParser
 from argparse import FileType
-from configparser import ConfigParser
-import os.path
+import re
 
 
 __version__ = '0.1'
 
 
-class NothingCore:
+class CleanFixtureCore:
 
     def __init__(self):
         """Initialize a total waste of CPU time"""
 
         self.args = None
         self.arg_parser = ArgumentParser()
-        self.config = None
 
 
     def get_args(self):
@@ -46,44 +44,34 @@ class NothingCore:
 
         self.arg_parser.add_argument('--version', action = 'version',
                 version = '%(prog)s ' + str(__version__))
-        self.arg_parser.add_argument('-c',
-                action = 'store', dest = 'config',
-                default = '/etc/nothing.conf',
-                help = ('set the config file'))
-        self.arg_parser.add_argument('--full',
-                action = 'store_true',
-                help = ('Do nothing to the fullest'))
         self.arg_parser.add_argument('files',
-                type = FileType('r'), metavar='FILE', nargs = '?',
-                help = ('set a file with which to do nothing'))
+                metavar='FILE', nargs = '*',
+                help = ('set a file from which to erase primary keys'))
 
         self.args = self.arg_parser.parse_args()
 
 
-    def get_config(self):
-        """Read the config file"""
+    def clean_fixtures(self):
+        """Clean primary keys from fixtures file"""
+        rex = re.compile(r'^  "pk": \d+,')
 
-        config = ConfigParser()
-        
-        if os.path.isfile(self.args.config):
-            myconf = self.args.config
-            config.read(myconf)
-        else: pass
-
-
-
-    def main_event(self):
-        """Do the actual nothing"""
-        pass
+        for fi in self.args.files:
+            with open(fi, 'r') as f:
+                content = f.readlines()
+            newcontent = []
+            for line in content:
+                if not rex.match(line):
+                    newcontent.append(line)
+            with open(fi, 'w') as f:
+                f.write(''.join(newcontent))
 
 
 
     def run_script(self):
-        """Run the program that does nothing"""
+        """Run the program"""
         try:
             self.get_args()
-            self.get_config()
-            self.main_event()
+            self.clean_fixtures()
 
         except KeyboardInterrupt:
             print('\nExiting on KeyboardInterrupt')
@@ -94,10 +82,10 @@ class NothingCore:
     
     
 def main():
-    thing = NothingCore()
+    thing = CleanFixtureCore()
     thing.run_script()
 
 
 if __name__ == "__main__":
-    thing = NothingCore()
+    thing = CleanFixtureCore()
     thing.run_script()

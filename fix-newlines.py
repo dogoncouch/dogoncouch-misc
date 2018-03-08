@@ -97,8 +97,8 @@ def run_script():
     except KeyboardInterrupt:
         print('\nExiting on KeyboardInterrupt')
 
-    except Exception as err:
-        print('Error: ' + str(err))
+    #except Exception as err:
+    #    print('Error: ' + str(err))
 
     
     
