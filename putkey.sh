@@ -54,4 +54,4 @@ while getopts ":vhf:" o; do
 done
 shift $((OPTIND-1))
 
-cat $KEYFILE | ssh ${1} "mkdir -p ~/.ssh && cat >>  ~/.ssh/authorized_keys"
+cat $KEYFILE | ssh "${1}" "mkdir -p ~/.ssh && cat >>  ~/.ssh/authorized_keys"
