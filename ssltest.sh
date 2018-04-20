@@ -85,7 +85,7 @@ checksslconf() {
     echo
     ${CURLCMD} -I "https://${TARGETHOST}" | grep "^Server: "
 
-    # Checking for HTTPS only
+    # Check for HTTPS only
     echo
     HTTPMOVED=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^HTTP" | grep "301 Moved Permanently")
     HTTPFOUND=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^HTTP" | grep "302 Found")
@@ -104,7 +104,7 @@ checksslconf() {
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled-"
     fi
 
-    # Checking for HSTS http header
+    # Check for HSTS http header
     HSTSHEADER=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^Strict")
     if [ -n "$HSTSHEADER" ]; then
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] Strict transport security header enabled."
@@ -113,7 +113,7 @@ checksslconf() {
     fi
 
 
-    # Checking supported SSL/TLS protocols
+    # Check supported SSL/TLS protocols
     echo
     ISSSLV3=$(${CURLCMD} --sslv3 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV10=$(${CURLCMD} --tlsv1.0 -I "https://${TARGETHOST}" | grep "^HTTP")
@@ -140,7 +140,7 @@ checksslconf() {
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.2 is disabled."
     fi
 
-    # Checking content embedding protections
+    # Check content embedding protections
     echo
     XFOPTSSAME=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^X-Frame-Options" | grep "SAMEORIGIN")
     XFOPTSDENY=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^X-Frame-Options" | grep "DENY")
