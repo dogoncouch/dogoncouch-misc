@@ -127,7 +127,7 @@ checksslconf() {
 
         # Check supported SSL/TLS protocols
         echo
-        echo -e "${CYANCOLOR}=== Checking supported HTTPS protocols ===${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}=== Supported HTTPS protocols ===${DEFAULTCOLOR}"
         ISSSLV2=$(${CURLCMD} --sslv2 -I "https://${TARGETHOST}" | grep "^HTTP")
         ISSSLV3=$(${CURLCMD} --sslv3 -I "https://${TARGETHOST}" | grep "^HTTP")
         ISTLSV10=$(${CURLCMD} --tlsv1.0 -I "https://${TARGETHOST}" | grep "^HTTP")
@@ -160,7 +160,7 @@ checksslconf() {
         fi
 
         echo
-        echo -e "${CYANCOLOR}=== Checking header attributes ===${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}=== Header attributes ===${DEFAULTCOLOR}"
         # Check for HSTS http header
         HSTSHEADER=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^Strict")
         if [ -n "$HSTSHEADER" ]; then
@@ -184,7 +184,7 @@ checksslconf() {
 
         # Check ciphers with nmap
         echo
-        echo -e "${CYANCOLOR}=== Checking key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}=== Key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
         nmap --script ssl-enum-ciphers -p "${SSLPORT}" "${TARGETHOST}"
 
     else
@@ -196,7 +196,7 @@ checksslconf() {
 checksslcert() {
     # Check server certificate
     echo
-    echo -e "${CYANCOLOR}=== Checking server certificate ===${DEFAULTCOLOR}"
+    echo -e "${CYANCOLOR}=== Server certificate ===${DEFAULTCOLOR}"
     echo -e "${CYANCOLOR}= Server public key: 4096 bits recommended, 2048 bits minimum =${DEFAULTCOLOR}"
     if [ ${CERTFILE} ]; then
         CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
@@ -227,12 +227,12 @@ checksslcert() {
 
 checksshconf() {
     echo
-    echo -e "${CYANCOLOR}=== Checking SSH protocol information ===${DEFAULTCOLOR}"
+    echo -e "${CYANCOLOR}=== SSH protocol information ===${DEFAULTCOLOR}"
     NOSSH=$(ssh -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^ssh: connect to host ${TARGETHOST} port ${SSHPORT}: Connection refused")
     if [ -n "$NOSSH" ]; then
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] SSH is disabled on port ${SSHPORT}."
     else
-        echo -e "${CYANCOLOR}= Checking SSH version 1 =${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}= SSH version 1 =${DEFAULTCOLOR}"
         NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
         if [ -n "$NOSSHV1" ]; then
             echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 1 is disabled."
@@ -240,7 +240,7 @@ checksshconf() {
             echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSH version 1 is enabled!"
         fi
         echo
-        echo -e "${CYANCOLOR}= Checking SSH version 2 =${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}= SSH version 2 =${DEFAULTCOLOR}"
         SSHV2=$(ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$")
         if [ -n "$SSHV2" ]; then
             echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 2 is enabled."
