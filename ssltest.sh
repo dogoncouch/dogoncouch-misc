@@ -207,7 +207,7 @@ checksshconf() {
     if [ -n "$NOSSH" ]; then
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] SSH is disabled on port ${SSHPORT}."
     else
-        NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null-p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
+        NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
         if [ -n "$NOSSHV1" ]; then
             echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 1 is disabled."
         else
@@ -216,7 +216,7 @@ checksshconf() {
         echo
         echo -e "${CYANCOLOR}= Checking SSH version 2${DEFAULTCOLOR}"
         echo
-        ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null-p "${SSHPORT}" "user@${TARGETHOST}" |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
+        ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
         echo
     fi
 }
