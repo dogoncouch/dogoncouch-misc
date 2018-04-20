@@ -38,7 +38,7 @@ usage() {
 CURLCMD="curl -s"
 SSHPORT="22"
 
-while getopts ":vhio:p:c:" o; do
+while getopts ":vhfio:p:c:" o; do
     case "${o}" in
         v)
             echo putkey-$VERSION
