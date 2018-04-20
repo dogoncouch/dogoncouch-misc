@@ -115,10 +115,16 @@ checksslconf() {
 
     # Check supported SSL/TLS protocols
     echo
+    ISSSLV2=$(${CURLCMD} --sslv2 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISSSLV3=$(${CURLCMD} --sslv3 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV10=$(${CURLCMD} --tlsv1.0 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV11=$(${CURLCMD} --tlsv1.1 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV12=$(${CURLCMD} --tlsv1.2 -I "https://${TARGETHOST}" | grep "^HTTP")
+    if [ -n "$ISSSLV2" ]; then
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSLv2 is enabled!"
+    else
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSLv2 is disabled."
+    fi
     if [ -n "$ISSSLV3" ]; then
         echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSLv3 is enabled!"
     else
@@ -165,13 +171,13 @@ checksslconf() {
 checksslcert() {
     echo
     echo
-    echo === Checking server certificate length ===
+    echo === Checking server certificate ===
     echo = 4096 bits recommended, 2048 bits minimum
     echo
     if [ ${CERTFILE} ]; then
-        openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:443" |& grep "^Server public key"
+        openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:443" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:"
     else
-        openssl s_client -showcerts -connect "${TARGETHOST}:443" |& grep "^Server public key"
+        openssl s_client -showcerts -connect "${TARGETHOST}:443" -verify-hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:"
     fi
     echo
     echo
