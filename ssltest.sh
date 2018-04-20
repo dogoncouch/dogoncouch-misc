@@ -195,9 +195,14 @@ checksslcert() {
     echo -e "${CYANCOLOR}= Should be no shorter than server certificate${DEFAULTCOLOR}"
     echo
     if [ ${CERTFILE} ]; then
-        openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key"
+        DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key")
     else
-        openssl s_client -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key"
+        DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key")
+    fi
+    if [ -n "$DHTEMPKEY" ]; then
+        echo "$DHTEMPKEY"
+    else
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] No DH temp key."
     fi
     echo
 }
