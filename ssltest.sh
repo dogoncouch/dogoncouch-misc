@@ -93,6 +93,8 @@ checksslconf() {
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP redirects."
     elif [ -n "$HTTPFOUND" ]; then
         echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled!"
+    else
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP disabled."
     fi
 
     HTTPSFOUND=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^HTTP")
