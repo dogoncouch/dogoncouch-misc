@@ -97,6 +97,10 @@ fi
 
 checksslconf() {
     echo
+    if [ -z "$(which curl)" ]; then
+        echo "${REDCOLOR}Error:${DEFAULTCOLOR} curl not found in path."
+        exit 1
+    fi
     echo -e "${CYANCOLOR}=== Web server info for ${TARGETHOST} ===${DEFAULTCOLOR}"
     # Print web server info
     SERVERTYPESSL=$(${CURLCMD} -I "https://${TARGETHOST}:${SSLPORT}" | grep "^Server: ")
@@ -185,7 +189,11 @@ checksslconf() {
         # Check ciphers with nmap
         echo
         echo -e "${CYANCOLOR}=== Key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
-        nmap --script ssl-enum-ciphers -p "${SSLPORT}" "${TARGETHOST}"
+        if [ -z "$(which nmap)" ]; then
+            echo -e "${REDCOLOR}Error:${DEFAULTCOLOR} nmap not found in path. Skipping cipher enumeration."
+        else
+            nmap --script ssl-enum-ciphers -p "${SSLPORT}" "${TARGETHOST}"
+        fi
 
     else
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled on port ${SSLPORT}."
@@ -196,37 +204,45 @@ checksslconf() {
 checksslcert() {
     # Check server certificate
     echo
-    echo -e "${CYANCOLOR}=== Server certificate ===${DEFAULTCOLOR}"
-    echo -e "${CYANCOLOR}= Server public key: 4096 bits recommended, 2048 bits minimum =${DEFAULTCOLOR}"
-    if [ ${CERTFILE} ]; then
-        CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
+    if [ -z "$(which openssl)" ]; then
+        echo "${REDCOLOR}Error:${DEFAULTCOLOR} openssl not found in path. Skipping certificate check."
     else
-        CERTINFO=$(openssl s_client -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
-    fi
-    if [ -n "$CERTINFO" ]; then
-        echo "$CERTINFO"
-    else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] No server public key."
-    fi
+        echo -e "${CYANCOLOR}=== Server certificate ===${DEFAULTCOLOR}"
+        echo -e "${CYANCOLOR}= Server public key: 4096 bits recommended, 2048 bits minimum =${DEFAULTCOLOR}"
+        if [ ${CERTFILE} ]; then
+            CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
+        else
+            CERTINFO=$(openssl s_client -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
+        fi
+        if [ -n "$CERTINFO" ]; then
+            echo "$CERTINFO"
+        else
+            echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] No server public key."
+        fi
 
-    # Check DH key length
-    echo
-    echo -e "${CYANCOLOR}= Diffie-Hellman temp key: should be no shorter than public key =${DEFAULTCOLOR}"
-    if [ ${CERTFILE} ]; then
-        DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
-    else
-        DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
+        # Check DH key length
+        echo
+        echo -e "${CYANCOLOR}= Diffie-Hellman temp key: should be no shorter than public key =${DEFAULTCOLOR}"
+        if [ ${CERTFILE} ]; then
+            DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
+        else
+            DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
+        fi
+        if [ -n "$DHTEMPKEY" ]; then
+            echo "$DHTEMPKEY"
+        else
+            echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] No DH temp key."
+        fi
+        echo
     fi
-    if [ -n "$DHTEMPKEY" ]; then
-        echo "$DHTEMPKEY"
-    else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] No DH temp key."
-    fi
-    echo
 }
 
 checksshconf() {
     echo
+    if [ -z "$(which ssh)" ]; then
+        echo "${REDCOLOR}Error:${DEFAULTCOLOR} ssh not found in path."
+        exit 1
+    fi
     echo -e "${CYANCOLOR}=== SSH protocol information ===${DEFAULTCOLOR}"
     NOSSH=$(ssh -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^ssh: connect to host ${TARGETHOST} port ${SSHPORT}: Connection refused")
     if [ -n "$NOSSH" ]; then
