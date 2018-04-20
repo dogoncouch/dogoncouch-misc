@@ -185,10 +185,10 @@ checksslconf() {
         # Check ciphers with nmap
         echo
         echo -e "${CYANCOLOR}=== Checking key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
-        nmap --script ssl-enum-ciphers -p 443 "${TARGETHOST}"
+        nmap --script ssl-enum-ciphers -p "${SSLPORT}" "${TARGETHOST}"
 
     else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled on port 443."
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled on port ${SSLPORT}."
     fi
     echo
 }
@@ -199,9 +199,9 @@ checksslcert() {
     echo -e "${CYANCOLOR}=== Checking server certificate ===${DEFAULTCOLOR}"
     echo -e "${CYANCOLOR}= Server public key: 4096 bits recommended, 2048 bits minimum =${DEFAULTCOLOR}"
     if [ ${CERTFILE} ]; then
-        CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:443" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
+        CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
     else
-        CERTINFO=$(openssl s_client -showcerts -connect "${TARGETHOST}:443" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
+        CERTINFO=$(openssl s_client -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
     fi
     if [ -n "$CERTINFO" ]; then
         echo "$CERTINFO"
@@ -213,14 +213,14 @@ checksslcert() {
     echo
     echo -e "${CYANCOLOR}= Diffie-Hellman temp key: should be no shorter than public key =${DEFAULTCOLOR}"
     if [ ${CERTFILE} ]; then
-        DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key")
+        DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
     else
-        DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key")
+        DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
     fi
     if [ -n "$DHTEMPKEY" ]; then
         echo "$DHTEMPKEY"
     else
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] No DH temp key."
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] No DH temp key."
     fi
     echo
 }
