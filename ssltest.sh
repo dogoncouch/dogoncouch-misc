@@ -71,17 +71,19 @@ if [ "$(tput colors)" -ge 256 ]; then
     REDCOLOR="\e[91m"
     GREENCOLOR="\e[92m"
     YELLOWCOLOR="\e[93m"
+    CYANCOLOR="\e[96m"
 else
     DEFAULTCOLOR=""
     REDCOLOR=""
     GREENCOLOR=""
     YELLOWCOLOR=""
+    CYANCOLOR=""
 fi
 
 
 checksslconf() {
     echo
-    echo "=== Web server info for ${TARGETHOST} ==="
+    echo -e "${CYANCOLOR}=== Web server info for ${TARGETHOST} ===${DEFAULTCOLOR}"
     echo
     ${CURLCMD} -I "https://${TARGETHOST}" | grep "^Server: "
 
@@ -162,7 +164,7 @@ checksslconf() {
 
 
     echo
-    echo === Checking key lengths and supported symmetric ciphers ===
+    echo -e "${CYANCOLOR}=== Checking key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
     echo
     nmap --script ssl-enum-ciphers -p 443 "${TARGETHOST}"
     echo
@@ -170,21 +172,18 @@ checksslconf() {
 
 checksslcert() {
     echo
-    echo
-    echo === Checking server certificate ===
-    echo = 4096 bits recommended, 2048 bits minimum
+    echo -e "${CYANCOLOR}=== Checking server certificate ===${DEFAULTCOLOR}"
+    echo -e "${CYANCOLOR}= 4096 bits recommended, 2048 bits minimum${DEFAULTCOLOR}"
     echo
     if [ ${CERTFILE} ]; then
         openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:443" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:"
     else
         openssl s_client -showcerts -connect "${TARGETHOST}:443" -verify-hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:"
     fi
-    echo
-    echo
 
-
-    echo === Checking length of Diffie-Hellman prime ===
-    echo = Should be no shorter than server certificate
+    echo
+    echo -e "${CYANCOLOR}=== Checking length of Diffie-Hellman prime ===${DEFAULTCOLOR}"
+    echo -e "${CYANCOLOR}= Should be no shorter than server certificate${DEFAULTCOLOR}"
     echo
     if [ ${CERTFILE} ]; then
         openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:443" -cipher "EDH" |& grep "^Server Temp Key"
@@ -194,5 +193,22 @@ checksslcert() {
     echo
 }
 
+checksshconf() {
+    echo
+    echo -e "${CYANCOLOR}=== Checking SSH protocol information ===${DEFAULTCOLOR}"
+    echo -e "${CYANCOLOR}= Checking SSH version 1${DEFAULTCOLOR}"
+    NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
+    if [ -n "$NOSSHV1" ]; then
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 1 is disabled."
+    else
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSH version 1 is enabled!"
+    fi
+    echo
+    echo -e "${CYANCOLOR}= Checking SSH version 2${DEFAULTCOLOR}"
+    ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no 172.16.100.12 |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
+    echo
+}
+
 checksslconf
 #checksslcert
+checksshconf
