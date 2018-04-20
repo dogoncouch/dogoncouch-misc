@@ -202,6 +202,7 @@ checksshconf() {
     echo
     echo -e "${CYANCOLOR}=== Checking SSH protocol information ===${DEFAULTCOLOR}"
     echo -e "${CYANCOLOR}= Checking SSH version 1${DEFAULTCOLOR}"
+    echo
     NOSSH=$(ssh -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^ssh: connect to host ${TARGETHOST} port ${SSHPORT}: Connection refused")
     if [ -n "$NOSSH" ]; then
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] SSH is disabled on port ${SSHPORT}."
@@ -214,6 +215,7 @@ checksshconf() {
         fi
         echo
         echo -e "${CYANCOLOR}= Checking SSH version 2${DEFAULTCOLOR}"
+        echo
         ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -p "${SSHPORT}" "user@${TARGETHOST}" |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
         echo
     fi
