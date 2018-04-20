@@ -25,7 +25,7 @@
 VERSION="0.1"
 
 usage() {
-    echo "Usage: ${0##*/} [-hv] HOST"
+    echo "Usage: ${0##*/} [-hv] [options...] HOST"
     echo "  -h                  Print this help message"
     echo "  -v                  Print the version number"
     echo "  -f                  Full ssl certificate check"
