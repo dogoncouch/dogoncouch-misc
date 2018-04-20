@@ -33,15 +33,17 @@ usage() {
     echo "  -c CERTFILE         Set a CA certificate for verification"
     echo "  -o 'CURLOPTS'       Set additional options for curl"
     echo "  -p PORT             Set SSH port"
+    echo "  -s PORT             Set HTTPS port"
 }
 
 CURLCMD="curl -s"
 SSHPORT="22"
+SSLPORT="443"
 
-while getopts ":vhfic:o:p:" o; do
+while getopts ":vhfic:o:p:s:" o; do
     case "${o}" in
         v)
-            echo putkey-$VERSION
+            echo ssltest-$VERSION
             exit 0
             ;;
         h)
@@ -63,6 +65,9 @@ while getopts ":vhfic:o:p:" o; do
             ;;
         p)
             SSHPORT="${OPTARG}"
+            ;;
+        s)
+            SSLPORT="${OPTARG}"
             ;;
         *)
             usage
@@ -94,13 +99,9 @@ checksslconf() {
     echo
     echo -e "${CYANCOLOR}=== Web server info for ${TARGETHOST} ===${DEFAULTCOLOR}"
     # Print web server info
-    SERVERTYPE=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^Server: ")
-    if [ -n "$SERVERTYPE" ]; then
-        echo "$SERVERTYPE"
-    else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] Web server type not found.."
-    fi
-    echo
+    SERVERTYPESSL=$(${CURLCMD} -I "https://${TARGETHOST}:${SSLPORT}" | grep "^Server: ")
+    SERVERTYPEHTTP=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^Server: ")
+    SERVERTYPE8K=$(${CURLCMD} -I "http://${TARGETHOST}:8000" | grep "^Server: ")
 
     # Check for unsecured HTTP
     HTTPMOVED=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^HTTP" | grep "301 Moved Permanently")
@@ -108,21 +109,21 @@ checksslconf() {
     if [ -n "$HTTPMOVED" ]; then
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP redirects on port 80."
     elif [ -n "$HTTPFOUND" ]; then
-        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled on port 80! ${SERVERTYPEHTTP}"
     else
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is not enabled on port 80."
     fi
 
     HTTP8KFOUND=$(${CURLCMD} -I "http://${TARGETHOST}:8000" | grep "^HTTP" | grep "302 Found")
     if [ -n "$HTTP8KFOUND" ]; then
-        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled on port 8000!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled on port 8000! ${SERVERTYPE8K}"
     else
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is not enabled on port 8000."
     fi
     # Check for HTTPS
     HTTPSFOUND=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^HTTP")
     if [ -n "$HTTPSFOUND" ]; then
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTPS is enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTPS is enabled on port ${SSLPORT}. ${SERVERTYPESSL}"
 
         # Check supported SSL/TLS protocols
         echo
