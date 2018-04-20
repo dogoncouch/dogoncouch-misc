@@ -28,6 +28,7 @@ usage() {
     echo "Usage: ${0##*/} [-hv] HOST"
     echo "  -h                  Print this help message"
     echo "  -v                  Print the version number"
+    echo "  -f                  Full ssl certificate check"
     echo "  -i                  Accept untrusted certificates"
     echo "  -o 'CURLOPTS'       Set additional options for curl"
     echo "  -p PORT             Set SSH port"
@@ -46,6 +47,9 @@ while getopts ":vhio:p:c:" o; do
         h)
             usage
             exit 0
+            ;;
+        f)
+            FULLCERTCHECK=1
             ;;
         i)
             CURLCMD="${CURLCMD} -k"
@@ -222,5 +226,7 @@ checksshconf() {
 }
 
 checksslconf
-#checksslcert
+if [ $FULLCERTCHECK ]; then
+    checksslcert
+fi
 checksshconf
