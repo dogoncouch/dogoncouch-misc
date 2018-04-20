@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 
-import os
+from os import popen
 import threading
 from argparse import ArgumentParser
 
@@ -66,30 +66,27 @@ def wordlistgen(outfile):
     """Generate a 10 word random wordlist"""
 
     # Use completely random characters to minimize chance of a success
-    os.popen('pwgen -sy1 10 10 > ' + outfile)
+    popen('pwgen -sy1 10 10 > ' + outfile)
 
 
-def wordlistsim(wordlist, host, user, service, runs,
-        hargs):
+def wordlistsim(wordlist, host, user, service, runs, hargs):
     """Simulate a brute force attack by repeating a 10 word list"""
 
     for n in range(int(runs)):
         print('Starting run ' + str(n + 1) + '/' + str(runs) + \
                 ' on host ' + host + '.')
-        o = os.popen('hydra -t 4 -l ' + user + ' ' + hargs + ' -P ' + \
+        o = popen('hydra -t 4 -l ' + user + ' ' + hargs + ' -P ' + \
                 wordlist + ' ' + host + ' ' + service).read()
 
 
 def wordlistsimstart(wordlist, hosts, username, servicename, tries, hargs):
     """Start brute force attack simulations (one thread per host)"""
     
-    #nruns = str(int(tries) // 10)
-    
     # Set the number of runs
     with open(wordlist, 'r') as f:
         lines = f.readlines()
-    
     nruns = int(tries) // len(lines)
+    del(lines)
     
     print('Target hosts: ' + str(hosts) + '\n' + \
             'User: ' + username + '\n' + \
@@ -104,7 +101,6 @@ def wordlistsimstart(wordlist, hosts, username, servicename, tries, hargs):
                 args=(wordlist, host, username,
                     servicename, nruns,
                     hargs))
-        #thread.daemon = True
         thread.start()
 
 
