@@ -65,108 +65,99 @@ shift $((OPTIND-1))
 
 TARGETHOST="${1}"
 
+# Check for color terminal:
+if [ "$(tput colors)" -ge 256 ]; then
+    DEFAULTCOLOR="\e[39m"
+    REDCOLOR="\e[31m"
+    GREENCOLOR="\e[32m"
+    YELLOWCOLOR="\e[33m"
+else
+    DEFAULTCOLOR=""
+    REDCOLOR=""
+    GREENCOLOR=""
+    YELLOWCOLOR=""
+fi
+
+
 checksslconf() {
     echo
-    echo === Server info ===
+    echo "=== Web server info for ${TARGETHOST} ==="
     echo
     ${CURLCMD} -I "https://${TARGETHOST}" | grep "^Server: "
 
-    echo
-    echo
-    echo === Checking for https only ===
+    # Checking for HTTPS only
     echo
     HTTPMOVED=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^HTTP" | grep "301 Moved Permanently")
     HTTPFOUND=$(${CURLCMD} -I "http://${TARGETHOST}" | grep "^HTTP" | grep "302 Found")
     if [ -n "$HTTPMOVED" ]; then
-        echo "... HTTP redirects."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP redirects."
     elif [ -n "$HTTPFOUND" ]; then
-        echo "!!! Unsecured HTTP is enabled!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled!"
     fi
 
     HTTPSFOUND=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^HTTP")
     if [ -n "$HTTPSFOUND" ]; then
-        echo "... HTTPS is enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTPS is enabled."
     else
-        echo "--- HTTPS is not enabled-"
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled-"
     fi
 
-
-    echo
-    echo
-    echo === Checking for HSTS http header ===
-    echo
+    # Checking for HSTS http header
     HSTSHEADER=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^Strict")
     if [ -n "$HSTSHEADER" ]; then
-        echo "... Strict transport security header enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] Strict transport security header enabled."
     else
-        echo "!!! Strict transport security header not found!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Strict transport security header not found!"
     fi
 
 
-    echo
-    echo
-    echo === Checking supported SSL/TLS protocols ===
+    # Checking supported SSL/TLS protocols
     echo
     ISSSLV3=$(${CURLCMD} --sslv3 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV10=$(${CURLCMD} --tlsv1.0 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV11=$(${CURLCMD} --tlsv1.1 -I "https://${TARGETHOST}" | grep "^HTTP")
     ISTLSV12=$(${CURLCMD} --tlsv1.2 -I "https://${TARGETHOST}" | grep "^HTTP")
     if [ -n "$ISSSLV3" ]; then
-        echo "!!! SSLv3 is enabled!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSLv3 is enabled!"
     else
-        echo "... SSLv3 is disabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSLv3 is disabled."
     fi
     if [ -n "$ISTLSV10" ]; then
-        echo "!!! TLSv1.0 is enabled!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] TLSv1.0 is enabled!"
     else
-        echo "... TLSv1.0 is disabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.0 is disabled."
     fi
     if [ -n "$ISTLSV11" ]; then
-        echo "!!! TLSv1.1 is enabled!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] TLSv1.1 is enabled!"
     else
-        echo "... TLSv1.1 is disabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.1 is disabled."
     fi
     if [ -n "$ISTLSV12" ]; then
-        echo "... TLSv1.2 is enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.2 is enabled."
     else
-        echo "... TLSv1.2 is disabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.2 is disabled."
     fi
 
-    echo
-    echo
-    echo === Checking content embedding protections ===
+    # Checking content embedding protections
     echo
     XFOPTSSAME=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^X-Frame-Options" | grep "SAMEORIGIN")
     XFOPTSDENY=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^X-Frame-Options" | grep "DENY")
     if [ -n "$XFOPTSSAME" ];
     then
-        echo "... Content embedding protections enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] Content embedding protections enabled."
     elif [ -n "$XFOPTSDENY" ];
     then
-        echo "... Content embedding protections enabled."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] Content embedding protections enabled."
     else
-        echo "!!! Content embedding protections not found!"
+        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Content embedding protections not found!"
     fi
 
 
     echo
-    echo
-    echo === Checking for Internet Explorer content sniffer ===
-    echo
-    IECSNIFF=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^X-Content" | grep "nosniff")
-    if [ -n "$IECSNIFF" ];
-    then
-        echo "... Internet explorer content sniffer setting enabled."
-    else
-        echo "!!! Internet explorer content sniffer setting not found!"
-    fi
-
-
-    echo
-    echo
-    echo === Checking supported symmetric ciphers and key lengths ===
+    echo === Checking key lengths and supported symmetric ciphers ===
     echo
     nmap --script ssl-enum-ciphers -p 443 "${TARGETHOST}"
+    echo
 }
 
 checksslcert() {
