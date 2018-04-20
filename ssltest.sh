@@ -68,9 +68,9 @@ TARGETHOST="${1}"
 # Check for color terminal:
 if [ "$(tput colors)" -ge 256 ]; then
     DEFAULTCOLOR="\e[39m"
-    REDCOLOR="\e[31m"
-    GREENCOLOR="\e[32m"
-    YELLOWCOLOR="\e[33m"
+    REDCOLOR="\e[91m"
+    GREENCOLOR="\e[92m"
+    YELLOWCOLOR="\e[93m"
 else
     DEFAULTCOLOR=""
     REDCOLOR=""
