@@ -186,7 +186,6 @@ checksslconf() {
         echo
         echo -e "${CYANCOLOR}=== Checking key lengths and supported symmetric ciphers ===${DEFAULTCOLOR}"
         nmap --script ssl-enum-ciphers -p 443 "${TARGETHOST}"
-        echo
 
     else
         echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled on port 443."
