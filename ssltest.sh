@@ -30,12 +30,14 @@ usage() {
     echo "  -v                  Print the version number"
     echo "  -i                  Accept untrusted certificates"
     echo "  -o 'CURLOPTS'       Set additional options for curl"
+    echo "  -p PORT             Set SSH port"
     echo "  -c CERTFILE         Set a CA certificate for verification"
 }
 
 CURLCMD="curl -s"
+SSHPORT="22"
 
-while getopts ":vhio:c:" o; do
+while getopts ":vhio:p:c:" o; do
     case "${o}" in
         v)
             echo putkey-$VERSION
@@ -50,6 +52,9 @@ while getopts ":vhio:c:" o; do
             ;;
         o)
             CURLCMD="${CURLCMD} ${OPTARG}"
+            ;;
+        p)
+            SSHPORT="${OPTARG}"
             ;;
         c)
             CERTFILE="${OPTARG}"
@@ -103,7 +108,7 @@ checksslconf() {
     if [ -n "$HTTPSFOUND" ]; then
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTPS is enabled."
     else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled-"
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled."
     fi
 
     # Check for HSTS http header
@@ -197,16 +202,21 @@ checksshconf() {
     echo
     echo -e "${CYANCOLOR}=== Checking SSH protocol information ===${DEFAULTCOLOR}"
     echo -e "${CYANCOLOR}= Checking SSH version 1${DEFAULTCOLOR}"
-    NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
-    if [ -n "$NOSSHV1" ]; then
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 1 is disabled."
+    NOSSH=$(ssh -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^ssh: connect to host ${TARGETHOST} port ${SSHPORT}: Connection refused")
+    if [ -n "$NOSSH" ]; then
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] SSH is disabled on port ${SSHPORT}."
     else
-        echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSH version 1 is enabled!"
+        NOSSHV1=$(ssh -1v -o PasswordAuthentication=no -o PubkeyAuthentication=no -p "${SSHPORT}" "user@${TARGETHOST}" |& grep "^Protocol major versions differ")
+        if [ -n "$NOSSHV1" ]; then
+            echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] SSH version 1 is disabled."
+        else
+            echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] SSH version 1 is enabled!"
+        fi
+        echo
+        echo -e "${CYANCOLOR}= Checking SSH version 2${DEFAULTCOLOR}"
+        ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no -p "${SSHPORT}" "user@${TARGETHOST}" |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
+        echo
     fi
-    echo
-    echo -e "${CYANCOLOR}= Checking SSH version 2${DEFAULTCOLOR}"
-    ssh -2 -v -o PasswordAuthentication=no -o PubkeyAuthentication=no 172.16.100.12 |& grep -o -e "Remote protocol version .*$" -e "Server host key: .*$" -e "Authentications that can continue: .*$"
-    echo
 }
 
 checksslconf
