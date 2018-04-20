@@ -145,7 +145,7 @@ checksslconf() {
     if [ -n "$ISTLSV12" ]; then
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.2 is enabled."
     else
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] TLSv1.2 is disabled."
+        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] TLSv1.2 is disabled."
     fi
 
     # Check content embedding protections
