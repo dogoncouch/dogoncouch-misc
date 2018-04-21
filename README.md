@@ -57,7 +57,7 @@ optional arguments:
 ```
 
 ### uselog.py
-Logs system statistics to syslog (CPU usage, memory usage, CPU temperature).
+Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
