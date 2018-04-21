@@ -59,8 +59,6 @@ optional arguments:
 
 ### uselog.py
 Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil.
-usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
-
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
