@@ -25,7 +25,7 @@
 VERSION="0.1"
 
 usage() {
-    echo "Usage: ${0##*/} [-hv] [-f KEYFILE] [USER@]HOST"
+    echo "usage: ${0##*/} [-hv] [-f KEYFILE] [USER@]HOST"
     echo "  -h                  Print this help message"
     echo "  -v                  Print the version number"
     echo "  -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)"

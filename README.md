@@ -3,6 +3,21 @@ Miscellany
 
 ## Scripts
 
+### ssltest.sh
+Checks http and ssh protocol security on a remote host.
+
+```
+usage: ssltest.sh [-hv] [options...] HOST
+  -h                  Print this help message
+  -v                  Print the version number
+  -f                  Full ssl certificate check
+  -i                  Accept untrusted certificates
+  -c CERTFILE         Set a CA certificate for verification
+  -o 'CURLOPTS'       Set additional options for curl
+  -p PORT             Set SSH port
+  -s PORT             Set HTTPS port
+```
+
 ### geofind.py
 Requirements: geoip-python
 
@@ -17,40 +32,6 @@ optional arguments:
   --version    show program's version number and exit
   -f, --full   get full GeoIP output
   --data DATA  set the .dat file to use
-```
-
-### myip.py
-Finds and displays your public IP address via duckduckgo.
-
-```
-usage: myip.py
-```
-
-### putkey.sh
-Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
-
-```
-Usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
-  -h                  Print this help message
-  -v                  Print the version number
-  -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)
-```
-
-### uselog.py
-Logs system statistics to syslog (CPU usage, memory usage, CPU temperature).
-
-```
-usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
-                 [--fahr] [--notemp] [--tempfile TEMPFILE]
-
-optional arguments:
-  -h, --help           show this help message and exit
-  --version            show program's version number and exit
-  --interval INTERVAL  set logging interval in seconds (default 60)
-  --facility FACILITY  set logging facility (local0-7, default local1)
-  --fahr               display temperature in Fahrenheit
-  --notemp             do not log CPU temperature
-  --tempfile TEMPFILE  set a file for temperature readings
 ```
 
 ### wlsim.py
@@ -73,6 +54,40 @@ optional arguments:
   --generate          generate a random wordlist to use
   --user USER         set the username to use (default: root)
   --service SERVICE   set the service to target (default: ssh)
+```
+
+### uselog.py
+Logs system statistics to syslog (CPU usage, memory usage, CPU temperature).
+
+```
+usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
+                 [--fahr] [--notemp] [--tempfile TEMPFILE]
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --version            show program's version number and exit
+  --interval INTERVAL  set logging interval in seconds (default 60)
+  --facility FACILITY  set logging facility (local0-7, default local1)
+  --fahr               display temperature in Fahrenheit
+  --notemp             do not log CPU temperature
+  --tempfile TEMPFILE  set a file for temperature readings
+```
+
+### myip.py
+Finds and displays your public IP address via duckduckgo.
+
+```
+usage: myip.py
+```
+
+### putkey.sh
+Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
+
+```
+usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
+  -h                  Print this help message
+  -v                  Print the version number
+  -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)
 ```
 
 ### fix-newlines.py
