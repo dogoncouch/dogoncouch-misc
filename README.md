@@ -12,6 +12,7 @@ usage: ssltest.sh [-hv] [options...] HOST
   -v                  Print the version number
   -f                  Full ssl certificate check
   -i                  Accept untrusted certificates
+  -l                  Use color output for light background
   -c CERTFILE         Set a CA certificate for verification
   -o 'CURLOPTS'       Set additional options for curl
   -p PORT             Set SSH port
