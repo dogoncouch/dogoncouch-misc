@@ -54,6 +54,7 @@ while getopts ":vhfic:o:p:s:" o; do
             FULLCERTCHECK=1
             ;;
         i)
+            INSECUREMODE=1
             CURLCMD="${CURLCMD} -k"
             ;;
         c)
@@ -95,7 +96,7 @@ else
 fi
 
 
-checksslconf() {
+checksslconn() {
     echo
     if [ -z "$(which curl)" ]; then
         echo "${REDCOLOR}Error:${DEFAULTCOLOR} curl not found in path."
@@ -115,17 +116,17 @@ checksslconf() {
     elif [ -n "$HTTPFOUND" ]; then
         echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled on port 80! ${SERVERTYPEHTTP}"
     else
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is not enabled on port 80."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is disabled on port 80."
     fi
 
     HTTP8KFOUND=$(${CURLCMD} -I "http://${TARGETHOST}:8000" | grep "^HTTP" | grep "302 Found")
     if [ -n "$HTTP8KFOUND" ]; then
         echo -e "[${REDCOLOR}!!!${DEFAULTCOLOR}] Unsecured HTTP is enabled on port 8000! ${SERVERTYPE8K}"
     else
-        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is not enabled on port 8000."
+        echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTP is disabled on port 8000."
     fi
     # Check for HTTPS
-    HTTPSFOUND=$(${CURLCMD} -I "https://${TARGETHOST}" | grep "^HTTP")
+    HTTPSFOUND=$(${CURLCMD} -I "https://${TARGETHOST}:${SSLPORT}" | grep "^HTTP")
     if [ -n "$HTTPSFOUND" ]; then
         echo -e "[${GREENCOLOR}...${DEFAULTCOLOR}] HTTPS is enabled on port ${SSLPORT}. ${SERVERTYPESSL}"
 
@@ -196,7 +197,11 @@ checksslconf() {
         fi
 
     else
-        echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is not enabled on port ${SSLPORT}."
+        if [ "$INSECUREMODE" ]; then
+            echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is disabled on port ${SSLPORT}."
+        else
+            echo -e "[${YELLOWCOLOR}---${DEFAULTCOLOR}] HTTPS is disabled or cert not trusted on port ${SSLPORT}. Try -i option."
+        fi
     fi
     echo
 }
@@ -237,7 +242,7 @@ checksslcert() {
     fi
 }
 
-checksshconf() {
+checksshconn() {
     echo
     if [ -z "$(which ssh)" ]; then
         echo "${REDCOLOR}Error:${DEFAULTCOLOR} ssh not found in path."
@@ -269,8 +274,8 @@ checksshconf() {
     echo
 }
 
-checksslconf
+checksslconn
 if [ $FULLCERTCHECK ]; then
     checksslcert
 fi
-checksshconf
+checksshconn
