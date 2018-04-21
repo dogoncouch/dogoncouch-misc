@@ -35,6 +35,36 @@ optional arguments:
   --data DATA  set the .dat file to use
 ```
 
+### Reverse Shell
+#### revsrv.py
+Listen for an incoming reverse shell from a client running revcli.py.
+
+```
+usage: revsrv.py [-h] [--version] port
+
+positional arguments:
+  port        set a file with which to do nothing
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+```
+
+#### revcli.py
+Send a reverse shell to a server running revsrv.py.
+
+```usage: revcli.py [-h] [--version] [-p] host port
+
+positional arguments:
+  host        set the remote host
+  port        set the remote port
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+  -p          print received commands
+```
+
 ### wlsim.py
 Simulates brute force attacks by repeating the same wordlist.
 
