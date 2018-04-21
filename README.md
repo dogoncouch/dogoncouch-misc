@@ -19,7 +19,7 @@ usage: ssltest.sh [-hv] [options...] HOST
 ```
 
 ### geofind.py
-Requirements: geoip-python
+Prints GeoIP information on a hostname or IP address. Requirements: geoip-python.
 
 ```
 usage: geofind.py [-h] [--version] [-f] [--data DATA] [HOST [HOST ...]]
@@ -57,7 +57,7 @@ optional arguments:
 ```
 
 ### uselog.py
-Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil
+Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil.
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
