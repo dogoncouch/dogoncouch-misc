@@ -74,7 +74,7 @@ optional arguments:
 ```
 
 ### myip.py
-Finds and displays your public IP address via duckduckgo.
+Finds and displays your public IP address and location via duckduckgo.
 
 ```
 usage: myip.py
