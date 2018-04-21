@@ -30,6 +30,7 @@ usage() {
     echo "  -v                  Print the version number"
     echo "  -f                  Full ssl certificate check"
     echo "  -i                  Accept untrusted certificates"
+    echo "  -l                  Use color output for light background"
     echo "  -c CERTFILE         Set a CA certificate for verification"
     echo "  -o 'CURLOPTS'       Set additional options for curl"
     echo "  -p PORT             Set SSH port"
@@ -41,7 +42,7 @@ OPENSSLCMD="openssl s_client"
 SSHPORT="22"
 SSLPORT="443"
 
-while getopts ":vhfic:o:p:s:" o; do
+while getopts ":vhfilc:o:p:s:" o; do
     case "${o}" in
         v)
             echo ssltest-$VERSION
@@ -57,6 +58,9 @@ while getopts ":vhfic:o:p:s:" o; do
         i)
             INSECUREMODE=1
             CURLCMD="${CURLCMD} -k"
+            ;;
+        l)
+            LIGHTBG=1
             ;;
         c)
             OPENSSLCMD="${OPENSSLCMD} -cert '${OPTARG}'"
@@ -83,11 +87,19 @@ TARGETHOST="${1}"
 
 # Check for color terminal:
 if [ "$(tput colors)" -ge 256 ]; then
-    DEFAULTCOLOR="\e[39m"
-    REDCOLOR="\e[91m"
-    GREENCOLOR="\e[92m"
-    YELLOWCOLOR="\e[93m"
-    CYANCOLOR="\e[96m"
+    if [ $LIGHTBG ]; then
+        DEFAULTCOLOR="\e[39m\e[49m"
+        REDCOLOR="\e[101m"
+        GREENCOLOR="\e[102m"
+        YELLOWCOLOR="\e[103m"
+        CYANCOLOR="\e[34m"
+    else
+        DEFAULTCOLOR="\e[39m"
+        REDCOLOR="\e[91m"
+        GREENCOLOR="\e[92m"
+        YELLOWCOLOR="\e[93m"
+        CYANCOLOR="\e[96m"
+    fi
 else
     DEFAULTCOLOR=""
     REDCOLOR=""
