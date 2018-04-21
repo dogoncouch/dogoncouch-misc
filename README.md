@@ -90,6 +90,27 @@ usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
   -f FILE             Set the key file (default ~/.ssh/id_rsa.pub)
 ```
 
+### html-gen.py
+Creates HTML files for directories full of pictures or other files by combining a starter HTML file, the filename, and an ender HTML file. Can also create files one at a time based on CLI input.
+
+```
+usage: html-gen.py [-h] [--version] [-i IDENTIFIER] [--jpgdir JPGDIR]
+                   [--outdir OUTDIR] [--starthtml FILE] [--endhtml FILE]
+                   [FILE]
+
+positional arguments:
+  FILE              set the output file
+
+optional arguments:
+  -h, --help        show this help message and exit
+  --version         show program's version number and exit
+  -i IDENTIFIER     set the identifier
+  --jpgdir JPGDIR   set a directory for image file input
+  --outdir OUTDIR   set a directory for html file output
+  --starthtml FILE  set the start HTML file (default: starter.html)
+  --endhtml FILE    set the ending HTML file (default: ender.html)
+```
+
 ### fix-newlines.py
 Switches newlines in a file between \r and \n. Mostly written for people who don't have access to GNU sed.
 
