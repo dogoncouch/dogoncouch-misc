@@ -88,13 +88,13 @@ TARGETHOST="${1}"
 # Check for color terminal:
 if [ "$(tput colors)" -ge 256 ]; then
     if [ $LIGHTBG ]; then
-        DEFAULTCOLOR="\e[39m\e[49m"
+        DEFAULTCOLOR="\e[0m"
         REDCOLOR="\e[101m"
         GREENCOLOR="\e[102m"
         YELLOWCOLOR="\e[103m"
         CYANCOLOR="\e[34m"
     else
-        DEFAULTCOLOR="\e[39m"
+        DEFAULTCOLOR="\e[0m"
         REDCOLOR="\e[91m"
         GREENCOLOR="\e[92m"
         YELLOWCOLOR="\e[93m"
