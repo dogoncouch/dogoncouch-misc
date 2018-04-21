@@ -136,6 +136,20 @@ optional arguments:
   --out OUT   set an output file
 ```
 
+### clean-fixtures.py
+Removes primary keys from django fixtures.
+
+```
+usage: clean-fixtures.py [-h] [--version] [FILE [FILE ...]]
+
+positional arguments:
+  FILE        set a file from which to erase primary keys
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+```
+
 ## Skeleton scripts
 Script templates that do nothing really well.
 
