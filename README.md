@@ -58,6 +58,8 @@ optional arguments:
 
 ### uselog.py
 Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil.
+usage: putkey.sh [-hv] [-f KEYFILE] [USER@]HOST
+
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
@@ -74,10 +76,14 @@ optional arguments:
 ```
 
 ### myip.py
-Finds and displays your public IP address and location via duckduckgo.
+Finds and displays your public IP address and (approximate) location via duckduckgo.
 
 ```
-usage: myip.py
+usage: myip.py [-h] [--version]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
 ```
 
 ### putkey.sh
