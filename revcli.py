@@ -32,7 +32,7 @@ from time import sleep
 __version__ = '0.1'
 
 
-class RSCore:
+class RSCliCore:
 
     def __init__(self):
         """Initialize the shell client"""
