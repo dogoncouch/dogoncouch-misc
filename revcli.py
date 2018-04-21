@@ -97,7 +97,7 @@ class RSCliCore:
 
 
 def main():
-    thing = RSCore()
+    thing = RSCliCore()
     thing.run_script()
 
 

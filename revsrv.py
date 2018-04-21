@@ -65,16 +65,16 @@ class RSSrvCore:
             while True:
                 try:
                     cmd = input('$ ')
-                    conn.send(bytes(cmd, 'utf8'))
                     if cmd == 'exit':
+                        conn.send(bytes(cmd, 'utf8'))
                         conn.close()
                         s.close()
                         exit(0)
                     else:
+                        conn.send(bytes(cmd, 'utf8'))
                         recdata = conn.recv(16834)
                         if recdata:
                             stdout.buffer.write(recdata)
-                        sleep(0.1)
                 except EOFError:
                     conn.send(bytes('exit', 'utf8'))
                     conn.close()
@@ -93,7 +93,7 @@ class RSSrvCore:
 
 
 def main():
-    thing = ListenCore()
+    thing = RSSrvCore()
     thing.run_script()
 
 
