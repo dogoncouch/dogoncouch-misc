@@ -1,6 +1,18 @@
 # dogoncouch-misc
 Miscellany
 
+## Index
+- [ssltest.sh](#ssltestsh) - Checks http and ssh protocol security on a remote host.
+- [geofind.py](#geofindpy) - Prints GeoIP information on a hostname or IP address.
+- [Reverse Shell](#reverse-shell) - Reverse shell server and client.
+- [wlsim.py](#wlsimpy) - Simulates brute force attacks by repeating the same wordlist.
+- [uselog.py](#uselogpy) - Logs system usage statistics to syslog.
+- [myip.py](#myippy) - Finds and displays your public IP address and (approximate) location via duckduckgo.
+- [putkey.sh](#putkeysh) - Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
+- [html-gen.py](#html-genpy) - Creates HTML files for directories full of pictures or other files
+- [fix-newlines.py](#fix-newlinespy) - Switches newlines in a file between \r and \n.
+- [clean-fixtures.py](#clean-fixturespy) - Removes primary keys from django fixtures.
+
 ## Scripts
 
 ### ssltest.sh
@@ -36,8 +48,10 @@ optional arguments:
 ```
 
 ### Reverse Shell
+Reverse shell server and client.
+
 #### revsrv.py
-Listen for an incoming reverse shell from a client running revcli.py.
+Listens for an incoming reverse shell from a client running revcli.py.
 
 ```
 usage: revsrv.py [-h] [--version] port
@@ -51,7 +65,7 @@ optional arguments:
 ```
 
 #### revcli.py
-Send a reverse shell to a server running revsrv.py.
+Sends a reverse shell to a server running revsrv.py.
 
 ```usage: revcli.py [-h] [--version] [-p] host port
 
@@ -88,7 +102,7 @@ optional arguments:
 ```
 
 ### uselog.py
-Logs system statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil.
+Logs system usage statistics to syslog (CPU usage, memory usage, CPU temperature). Requirements: psutil.
 
 ```
 usage: uselog.py [-h] [--version] [--interval INTERVAL] [--facility FACILITY]
