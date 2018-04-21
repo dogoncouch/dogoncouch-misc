@@ -23,8 +23,7 @@
 # SOFTWARE.
 
 from argparse import ArgumentParser
-from argparse import FileType
-import urllib.request
+from urllib import request
 import re
 from sys import argv, exit
 
@@ -46,9 +45,9 @@ def get_args():
 
 
 def main_event():
-    """Do the actual nothing"""
-    con = urllib.request.Request('https://duckduckgo.com/?q=ip')
-    result = urllib.request.urlopen(con).read()
+    """Get and print local IP address info"""
+    con = request.Request('https://duckduckgo.com/?q=ip')
+    result = request.urlopen(con).read()
 
     rex = re.compile(r".*Your IP address is (\d+\.\d+\.\d+\.\d+) " + \
         "in <[^>]+>([^<]+)</a>")
@@ -60,7 +59,7 @@ def main_event():
 
 
 def run_script():
-    """Run the program that does nothing"""
+    """Run the geofind program"""
     try:
         args = get_args()
         main_event()

@@ -23,22 +23,21 @@
 # SOFTWARE.
 
 from argparse import ArgumentParser
-from argparse import FileType
-from configparser import ConfigParser
-import os.path
+import socket
+from sys import exit, stdout
+from time import sleep
 
 
 __version__ = '0.1'
 
 
-class NothingCore:
+class ListenCore:
 
     def __init__(self):
-        """Initialize a total waste of CPU time"""
+        """Initialize a shell server"""
 
         self.args = None
         self.arg_parser = ArgumentParser()
-        self.config = None
 
 
     def get_args(self):
@@ -46,41 +45,47 @@ class NothingCore:
 
         self.arg_parser.add_argument('--version', action = 'version',
                 version = '%(prog)s ' + str(__version__))
-        self.arg_parser.add_argument('-c',
-                action = 'store', dest = 'config',
-                default = '/etc/nothing.conf',
-                help = ('set the config file'))
-        self.arg_parser.add_argument('--full',
-                action = 'store_true',
-                help = ('Do nothing to the fullest'))
-        self.arg_parser.add_argument('files',
-                type = FileType('r'), metavar='FILE', nargs = '?',
+        self.arg_parser.add_argument('port',
+                action = 'store', type=int,
                 help = ('set a file with which to do nothing'))
 
         self.args = self.arg_parser.parse_args()
 
 
-    def get_config(self):
-        """Read the config file"""
-
-        config = ConfigParser()
-        
-        if os.path.isfile(self.args.config):
-            myconf = self.args.config
-            config.read(myconf)
-        else: pass
-
-
     def main_event(self):
-        """Do the actual nothing"""
-        pass
+        """Connect to an incoming shell"""
+        with socket.socket() as s:
+            print('Binding to port ' + str(self.args.port))
+            s.bind(('0.0.0.0', self.args.port))
+            s.listen(1)
+            conn, host = s.accept()
+            print('Received connection from ' + str(host[0]) + \
+                    ':' + str(host[1]) + '.')
+            print('Type exit or enter EOF (ctrl-d) to exit')
+            while True:
+                try:
+                    cmd = input('$ ')
+                    conn.send(bytes(cmd, 'utf8'))
+                    if cmd == 'exit':
+                        conn.close()
+                        s.close()
+                        exit(0)
+                    else:
+                        recdata = conn.recv(16834)
+                        if recdata:
+                            stdout.buffer.write(recdata)
+                        sleep(0.1)
+                except EOFError:
+                    conn.send(bytes('exit', 'utf8'))
+                    conn.close()
+                    s.close()
+                    exit(0)
 
 
     def run_script(self):
-        """Run the program that does nothing"""
+        """Run the shell server program"""
         try:
             self.get_args()
-            self.get_config()
             self.main_event()
 
         except KeyboardInterrupt:
@@ -88,7 +93,7 @@ class NothingCore:
 
 
 def main():
-    thing = NothingCore()
+    thing = ListenCore()
     thing.run_script()
 
 

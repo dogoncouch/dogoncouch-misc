@@ -66,11 +66,9 @@ def get_config(configfile):
     else: return None
 
 
-
 def main_event():
     """Do the actual nothing"""
     pass
-
 
 
 def run_script():
@@ -83,14 +81,10 @@ def run_script():
     except KeyboardInterrupt:
         print('\nExiting on KeyboardInterrupt')
 
-    #except Exception as err:
-    #    print('Error: ' + str(err))
 
-    
-    
 def main():
     run_script()
 
 
 if __name__ == "__main__":
-    run_script()
+    main()
