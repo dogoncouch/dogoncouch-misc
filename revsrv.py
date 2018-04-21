@@ -31,7 +31,7 @@ from time import sleep
 __version__ = '0.1'
 
 
-class ListenCore:
+class RSSrvCore:
 
     def __init__(self):
         """Initialize a shell server"""
