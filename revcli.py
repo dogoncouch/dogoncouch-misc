@@ -35,7 +35,7 @@ __version__ = '0.1'
 class RSCliCore:
 
     def __init__(self):
-        """Initialize the shell client"""
+        """Initialize a shell client"""
 
         self.args = None
         self.arg_parser = ArgumentParser()
@@ -70,7 +70,6 @@ class RSCliCore:
                 exit(1)
         
             while True:
-                #cmd = str(s.recv(1024))[1:]
                 cmd = str(s.recv(1024))[2:-1]
                 if cmd:
                     if self.args.printcmd:
