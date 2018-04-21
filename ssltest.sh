@@ -37,6 +37,7 @@ usage() {
 }
 
 CURLCMD="curl -s"
+OPENSSLCMD="openssl s_client"
 SSHPORT="22"
 SSLPORT="443"
 
@@ -58,8 +59,8 @@ while getopts ":vhfic:o:p:s:" o; do
             CURLCMD="${CURLCMD} -k"
             ;;
         c)
-            CERTFILE="${OPTARG}"
-            CURLCMD="${CURLCMD} --cacert ${CERTFILE}"
+            OPENSSLCMD="${OPENSSLCMD} -cert '${OPTARG}'"
+            CURLCMD="${CURLCMD} --cacert '${OPTARG}'"
             ;;
         o)
             CURLCMD="${CURLCMD} ${OPTARG}"
@@ -214,11 +215,7 @@ checksslcert() {
     else
         echo -e "${CYANCOLOR}=== Server certificate ===${DEFAULTCOLOR}"
         echo -e "${CYANCOLOR}= Server public key: 4096 bits recommended, 2048 bits minimum =${DEFAULTCOLOR}"
-        if [ ${CERTFILE} ]; then
-            CERTINFO=$(openssl s_client -cert "${CERTFILE}" -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
-        else
-            CERTINFO=$(openssl s_client -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
-        fi
+        CERTINFO=$(${OPENSSLCMD} -showcerts -connect "${TARGETHOST}:${SSLPORT}" -verify_hostname "${TARGETHOST}" |& grep -e "^Server public key" -e "^depth=" -e "^verify error:" -e "^verify return:" -e "Verify return code:")
         if [ -n "$CERTINFO" ]; then
             echo "$CERTINFO"
         else
@@ -228,11 +225,7 @@ checksslcert() {
         # Check DH key length
         echo
         echo -e "${CYANCOLOR}= Diffie-Hellman temp key: should be no shorter than public key =${DEFAULTCOLOR}"
-        if [ ${CERTFILE} ]; then
-            DHTEMPKEY=$(openssl s_client -cert "${CERTFILE}" -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
-        else
-            DHTEMPKEY=$(openssl s_client -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
-        fi
+        DHTEMPKEY=$(${OPENSSLCMD} -connect "${TARGETHOST}:${SSLPORT}" -cipher "EDH" |& grep "^Server Temp Key")
         if [ -n "$DHTEMPKEY" ]; then
             echo "$DHTEMPKEY"
         else
