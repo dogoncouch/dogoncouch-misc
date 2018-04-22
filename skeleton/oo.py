@@ -25,7 +25,7 @@
 from argparse import ArgumentParser
 from argparse import FileType
 from configparser import ConfigParser
-import os.path
+from os.path import isfile
 
 
 __version__ = '0.1'
@@ -65,7 +65,7 @@ class NothingCore:
 
         config = ConfigParser()
         
-        if os.path.isfile(self.args.config):
+        if isfile(self.args.config):
             myconf = self.args.config
             config.read(myconf)
         else: pass

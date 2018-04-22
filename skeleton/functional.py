@@ -25,7 +25,7 @@
 from argparse import ArgumentParser
 from argparse import FileType
 from configparser import ConfigParser
-import os.path
+from os.path import isfile
 
 
 __version__ = '0.1'
@@ -59,7 +59,7 @@ def get_config(configfile):
 
     config = ConfigParser()
     
-    if os.path.isfile(configfile):
+    if isfile(configfile):
         myconf = args.config
         config.read(myconf)
 

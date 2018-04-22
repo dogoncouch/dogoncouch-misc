@@ -24,6 +24,7 @@
 
 from argparse import ArgumentParser
 from configparser import ConfigParser
+from os.path import isfile
 import re
 from datetime import datetime
 
@@ -70,7 +71,7 @@ class LogFloodCore:
 
         config = ConfigParser()
         
-        if os.path.isfile(self.args.config):
+        if isfile(self.args.config):
             myconf = self.args.config
             config.read(myconf)
         else: pass
