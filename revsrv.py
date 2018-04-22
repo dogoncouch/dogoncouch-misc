@@ -79,6 +79,7 @@ class RSSrvCore:
                             stdout.buffer.write(recdata)
                 except EOFError:
                     conn.send(bytes('exit', 'utf8'))
+                    print('exit')
                     conn.close()
                     s.close()
                     exit(0)
