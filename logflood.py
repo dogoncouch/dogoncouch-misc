@@ -98,8 +98,8 @@ class LogFloodCore:
                 if sleepcount == self.args.sleepcount:
                     sleep(self.args.sleeptime)
                     sleepcount = 0
-                if self.args.eventcount:
-                    if self.eventcount == self.args.eventcount:
+                if self.args.maxevents:
+                    if self.eventcount == self.args.maxevents:
                         self.final_output()
                         exit(0)
                 try:
