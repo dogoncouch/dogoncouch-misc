@@ -54,7 +54,7 @@ Reverse shell server and client.
 Listens for an incoming reverse shell from a client running revcli.py.
 
 ```
-usage: revsrv.py [-h] [--version] port
+usage: revsrv.py [-h] [--version] [-f] port
 
 positional arguments:
   port        set the local port
@@ -62,6 +62,7 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
   --version   show program's version number and exit
+  -f          bind to sockets that are already in use
 ```
 
 #### revcli.py

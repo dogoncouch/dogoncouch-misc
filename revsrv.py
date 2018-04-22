@@ -45,6 +45,9 @@ class RSSrvCore:
 
         self.arg_parser.add_argument('--version', action = 'version',
                 version = '%(prog)s ' + str(__version__))
+        self.arg_parser.add_argument('-f',
+                action = 'store_true', dest = 'force',
+                help = ('bind to sockets that are already in use'))
         self.arg_parser.add_argument('port',
                 action = 'store', type=int,
                 help = ('set the local port'))
@@ -55,6 +58,9 @@ class RSSrvCore:
     def main_event(self):
         """Connect to an incoming shell"""
         with socket.socket() as s:
+            if self.args.force:
+                print('Enabling socket address reuse')
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             print('Binding to port ' + str(self.args.port))
             s.bind(('0.0.0.0', self.args.port))
             s.listen(1)
