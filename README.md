@@ -79,6 +79,7 @@ optional arguments:
   -h, --help  show this help message and exit
   --version   show program's version number and exit
   --verbose   enable terminal output
+  -k          send keepalive packets every 90 seconds
 ```
 
 ### wlsim.py

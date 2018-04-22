@@ -49,6 +49,9 @@ class RSCliCore:
         self.arg_parser.add_argument('--verbose',
                 action = 'store_true', dest = 'verbose',
                 help = ('enable terminal output'))
+        self.arg_parser.add_argument('-k',
+                action = 'store_true', dest = 'keepalive',
+                help = ('send keepalive packets every 90 seconds'))
         self.arg_parser.add_argument('host',
                 action = 'store',
                 help = ('set the remote host'))
@@ -69,7 +72,8 @@ class RSCliCore:
                         ' port ' + str(self.args.port) + '.')
                 exit(1)
             s.send(bytes(socket.gethostname(), 'utf8'))
-        
+
+            keepalivetimer = 900
             while True:
                 cmd = str(s.recv(1024))[2:-1]
                 if cmd:
@@ -89,7 +93,15 @@ class RSCliCore:
                             s.send(procoutput)
                         else:
                             s.send(bytes('\n', 'utf8'))
+                        keepalivetimer = 900
                 else:
+                    if self.args.keepalive:
+                        if keepalivetimer == 0:
+                            s.send(bytes('\n', 'utf8'))
+                            keepalivetimer == 900
+                        else:
+                            keepalivetimer -= 1
+
                     sleep(0.1)
 
 
