@@ -128,7 +128,7 @@ class LogFloodCore:
                 str(int(runtime.total_seconds() % 60 % 60)) + \
                 'seconds.')
         print('Average ' + str(int(
-            strself.event_count / runtime.total_seconds())) + \
+            self.event_count / runtime.total_seconds())) + \
                     ' events per second.')
 
 
