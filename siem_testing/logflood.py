@@ -94,7 +94,7 @@ class LogFloodCore:
         sleepcount = 0
         self.starttime = datetime.now()
         print('Starting logflood at ' + \
-                self.starttime..strftime('%b %d %H:%M:%S') + '.')
+                self.starttime.strftime('%b %d %H:%M:%S') + '.')
         while True:
             tstamp = datetime.now().strftime('%b %d %H:%M:%S')
             for logfile in self.args.files:
