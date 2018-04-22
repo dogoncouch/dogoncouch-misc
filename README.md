@@ -5,7 +5,9 @@ Miscellany
 - [ssltest.sh](#ssltestsh) - Checks http and ssh protocol security on a remote host.
 - [geofind.py](#geofindpy) - Prints GeoIP information on a hostname or IP address.
 - [Reverse Shell](#reverse-shell) - Reverse shell server and client.
-- [wlsim.py](#wlsimpy) - Simulates brute force attacks by repeating the same wordlist.
+- [SIEM testing](siem_testing/) - SIEM testing scripts.
+  - `logflood.py` - Floods log files using old log events with new date stamps.
+  - `wlsim.py` - Simulates brute force attacks by repeating the same wordlist.
 - [uselog.py](#uselogpy) - Logs system usage statistics to syslog.
 - [myip.py](#myippy) - Finds and displays your public IP address and (approximate) location via duckduckgo.
 - [putkey.sh](#putkeysh) - Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
@@ -80,28 +82,6 @@ optional arguments:
   --version   show program's version number and exit
   --verbose   enable terminal output
   -k          send keepalive packets every 90 seconds
-```
-
-### wlsim.py
-Simulates brute force attacks by repeating the same wordlist.
-
-```
-usage: wlsim.py [-h] [--version] [-n TRIES] [--file FILE] [--hydra-args HARGS]
-                [--generate] [--user USER] [--service SERVICE]
-                [HOST [HOST ...]]
-
-positional arguments:
-  HOST                set the target host
-
-optional arguments:
-  -h, --help          show this help message and exit
-  --version           show program's version number and exit
-  -n TRIES            set the number of passwords to check
-  --file FILE         set the wordlist file
-  --hydra-args HARGS  pass additional arguments to hydra
-  --generate          generate a random wordlist to use
-  --user USER         set the username to use (default: root)
-  --service SERVICE   set the service to target (default: ssh)
 ```
 
 ### uselog.py
