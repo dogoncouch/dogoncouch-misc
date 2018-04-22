@@ -2,7 +2,7 @@
 
 # MIT License
 # 
-# Copyright (c) 2017 Dan Persons (dpersonsdev@gmail.com)
+# Copyright (c) 2018 Dan Persons (dpersonsdev@gmail.com)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -67,9 +67,13 @@ class RSSrvCore:
             conn, host = s.accept()
             print('Received connection from ' + str(host[0]) + \
                     ':' + str(host[1]) + '.')
-            remotehost = str(conn.recv(1024))[2:-1]
-            print('Remote hostname: ' + remotehost + '.')
-            print('Type exit or enter EOF (ctrl-d) to exit')
+            remotehost, remotepyversion = str(
+                    conn.recv(1024))[2:-1].split(':')
+            print('Remote hostname: ' + remotehost + '.\n' + \
+                    'Remote Python major version: ' + remotepyversion + '.')
+            remotepyversion = int(remotepyversion)
+            #print('Remote Python major version: ' + remotepyversion + '.')
+            print('Type exit or enter EOF (ctrl-d) to exit.')
             while True:
                 try:
                     cmd = input(remotehost + '$ ')
@@ -81,8 +85,12 @@ class RSSrvCore:
                     else:
                         conn.send(bytes(cmd, 'utf8'))
                         recdata = conn.recv(16834)
-                        if recdata and recdata != bytes('\n', 'utf8'):
-                            stdout.buffer.write(recdata)
+                        if remotepyversion == 2:
+                            if recdata and recdata != ':':
+                                stdout.buffer.write(recdata)
+                        else:
+                            if recdata and recdata != bytes('\n', 'utf8'):
+                                stdout.buffer.write(recdata)
                 except EOFError:
                     conn.send(bytes('exit', 'utf8'))
                     print('exit')

