@@ -27,6 +27,7 @@ import socket
 from sys import exit, version_info
 from subprocess import check_output, STDOUT, CalledProcessError
 from time import sleep
+from getpass import getuser
 
 
 __version__ = '0.1'
@@ -73,9 +74,10 @@ class RSCliCore:
                     ' port ' + str(self.args.port) + '.')
             exit(1)
         if self.pyversion == 2:
-            s.send(socket.gethostname() + ':2')
+            s.send(getuser() + '@' + socket.gethostname() + ':2')
         else:
-            s.send(bytes(socket.gethostname() + ':3', 'utf8'))
+            s.send(bytes(getuser() + '@' + socket.gethostname() + \
+                    ':3', 'utf8'))
 
         keepalivetimer = 900
         while True:
