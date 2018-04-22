@@ -92,7 +92,9 @@ class LogFloodCore:
         for logfile in self.args.files:
             events[logfile] = []
             for rawevent in rawevents[logfile]:
-                events[logfile].append(rex.findall(rawevent)[0])
+                match = rex.findall(rawevent)
+                if match:
+                    events[logfile].append(match[0])
 
         # Delete raw events to free memory
         del(rawevents)
