@@ -128,10 +128,9 @@ class LogFloodCore:
                 str(int(runtime.total_seconds() // 60 % 60)) + \
                 'minutes, ' + \
                 str(int(runtime.total_seconds() % 60 % 60)) + \
-                'seconds.')
-        print('Average ' + str(int(
-            self.eventcount / runtime.total_seconds())) + \
-                    ' events per second.')
+                'seconds.\nAverage ' + str(int(
+                    self.eventcount / runtime.total_seconds())) + \
+                            ' events per second.')
 
 
     def run_script(self):
