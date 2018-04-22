@@ -47,7 +47,7 @@ class RSSrvCore:
                 version = '%(prog)s ' + str(__version__))
         self.arg_parser.add_argument('port',
                 action = 'store', type=int,
-                help = ('set a file with which to do nothing'))
+                help = ('set the local port'))
 
         self.args = self.arg_parser.parse_args()
 

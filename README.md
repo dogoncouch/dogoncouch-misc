@@ -57,7 +57,7 @@ Listens for an incoming reverse shell from a client running revcli.py.
 usage: revsrv.py [-h] [--version] port
 
 positional arguments:
-  port        set a file with which to do nothing
+  port        set the local port
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -67,7 +67,8 @@ optional arguments:
 #### revcli.py
 Sends a reverse shell to a server running revsrv.py.
 
-```usage: revcli.py [-h] [--version] [-p] host port
+```
+usage: revcli.py [-h] [--version] [--verbose] host port
 
 positional arguments:
   host        set the remote host
@@ -76,7 +77,7 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
   --version   show program's version number and exit
-  -p          print received commands
+  --verbose   enable terminal output
 ```
 
 ### wlsim.py
