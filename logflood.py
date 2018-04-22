@@ -23,8 +23,6 @@
 # SOFTWARE.
 
 from argparse import ArgumentParser
-from configparser import ConfigParser
-from os.path import isfile
 import re
 from datetime import datetime
 
@@ -64,17 +62,6 @@ class LogFloodCore:
                 help = ('set a log file to flood'))
 
         self.args = self.arg_parser.parse_args()
-
-
-    def get_config(self):
-        """Read the config file"""
-
-        config = ConfigParser()
-        
-        if isfile(self.args.config):
-            myconf = self.args.config
-            config.read(myconf)
-        else: pass
 
 
     def main_event(self):
@@ -148,7 +135,6 @@ class LogFloodCore:
         """Run the log flood program"""
         try:
             self.get_args()
-            self.get_config()
             self.main_event()
 
         except KeyboardInterrupt:
