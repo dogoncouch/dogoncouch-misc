@@ -25,6 +25,7 @@
 from argparse import ArgumentParser
 import re
 from datetime import datetime
+from time import sleep
 
 
 __version__ = '0.1'
