@@ -284,3 +284,4 @@ if [ $FULLCERTCHECK ]; then
     checksslcert
 fi
 checksshconn
+exit 0

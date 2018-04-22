@@ -61,10 +61,12 @@ class RSSrvCore:
             conn, host = s.accept()
             print('Received connection from ' + str(host[0]) + \
                     ':' + str(host[1]) + '.')
+            remotehost = str(conn.recv(1024))[2:-1]
+            print('Remote hostname: ' + remotehost + '.')
             print('Type exit or enter EOF (ctrl-d) to exit')
             while True:
                 try:
-                    cmd = input('$ ')
+                    cmd = input(remotehost + '$ ')
                     if cmd == 'exit':
                         conn.send(bytes(cmd, 'utf8'))
                         conn.close()
@@ -73,7 +75,7 @@ class RSSrvCore:
                     else:
                         conn.send(bytes(cmd, 'utf8'))
                         recdata = conn.recv(16834)
-                        if recdata:
+                        if recdata and recdata != bytes('\n', 'utf8'):
                             stdout.buffer.write(recdata)
                 except EOFError:
                     conn.send(bytes('exit', 'utf8'))

