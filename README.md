@@ -3,13 +3,13 @@ Miscellany
 
 ## Index
 - [ssltest.sh](#ssltestsh) - Checks http and ssh protocol security on a remote host.
-- [geofind.py](#geofindpy) - Prints GeoIP information on a hostname or IP address.
 - [Reverse Shell](#reverse-shell) - Reverse shell server and client.
+- [geofind.py](#geofindpy) - Prints GeoIP information on a hostname or IP address.
+- [uselog.py](#uselogpy) - Logs system usage statistics to syslog.
+- [myip.py](#myippy) - Finds and displays your public IP address and (approximate) location via duckduckgo.
 - [SIEM testing](siem_testing/) - SIEM testing scripts.
   - `logflood.py` - Floods log files using old log events with new date stamps.
   - `wlsim.py` - Simulates brute force attacks by repeating the same wordlist.
-- [uselog.py](#uselogpy) - Logs system usage statistics to syslog.
-- [myip.py](#myippy) - Finds and displays your public IP address and (approximate) location via duckduckgo.
 - [putkey.sh](#putkeysh) - Adds your ssh public key to `~/.ssh/authorized_keys` on a remote host.
 - [html-gen.py](#html-genpy) - Creates HTML files for directories full of pictures or other files
 - [fix-newlines.py](#fix-newlinespy) - Switches newlines in a file between \r and \n.
@@ -31,22 +31,6 @@ usage: ssltest.sh [-hv] [options...] HOST
   -o 'CURLOPTS'       Set additional options for curl
   -p PORT             Set SSH port
   -s PORT             Set HTTPS port
-```
-
-### geofind.py
-Prints GeoIP information on a hostname or IP address. Requirements: geoip-python.
-
-```
-usage: geofind.py [-h] [--version] [-f] [--data DATA] [HOST [HOST ...]]
-
-positional arguments:
-  HOST         set a host to look up
-
-optional arguments:
-  -h, --help   show this help message and exit
-  --version    show program's version number and exit
-  -f, --full   get full GeoIP output
-  --data DATA  set the .dat file to use
 ```
 
 ### Reverse Shell
@@ -82,6 +66,22 @@ optional arguments:
   --version   show program's version number and exit
   --verbose   enable terminal output
   -k          send keepalive packets every 90 seconds
+```
+
+### geofind.py
+Prints GeoIP information on a hostname or IP address. Requirements: geoip-python.
+
+```
+usage: geofind.py [-h] [--version] [-f] [--data DATA] [HOST [HOST ...]]
+
+positional arguments:
+  HOST         set a host to look up
+
+optional arguments:
+  -h, --help   show this help message and exit
+  --version    show program's version number and exit
+  -f, --full   get full GeoIP output
+  --data DATA  set the .dat file to use
 ```
 
 ### uselog.py
