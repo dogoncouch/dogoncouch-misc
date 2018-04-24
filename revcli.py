@@ -55,7 +55,7 @@ class RSCliCore:
                 action = 'store_true', dest = 'keepalive',
                 help = ('send keepalive packets every 90 seconds'))
         self.arg_parser.add_argument('-r',
-                action = 'store', type=int,
+                action = 'store', type=int, default = 5,
                 dest = 'reconnect', metavar = 'INTERVAL',
                 help = ('reconnect interval in minutes'))
         self.arg_parser.add_argument('host',

