@@ -54,6 +54,10 @@ class RSCliCore:
         self.arg_parser.add_argument('-k',
                 action = 'store_true', dest = 'keepalive',
                 help = ('send keepalive packets every 90 seconds'))
+        self.arg_parser.add_argument('-r',
+                action = 'store', type=int,
+                dest = 'reconnect', metavar = 'INTERVAL'
+                help = ('reconnect interval in minutes'))
         self.arg_parser.add_argument('host',
                 action = 'store',
                 help = ('set the remote host'))
@@ -70,9 +74,10 @@ class RSCliCore:
         try:
             s.connect((self.args.host, self.args.port))
         except ConnectionRefusedError:
-            print('Error: Connection refused for host '+ self.args.host + \
-                    ' port ' + str(self.args.port) + '.')
-            exit(1)
+            if self.args.verbose:
+                print('Error: Connection refused for host '+ self.args.host + \
+                        ' port ' + str(self.args.port) + '.')
+            return 0
         if self.pyversion == 2:
             s.send(getuser() + '@' + socket.gethostname() + ':2')
         else:
@@ -91,6 +96,10 @@ class RSCliCore:
                 if cmd == 'exit':
                     s.close()
                     exit(0)
+                elif cmd == 'detach':
+                    if self.args.verbose:
+                        print('Detaching.')
+                    return 0
                 else:
                     try:
                         procoutput = check_output(cmd, shell = True,
@@ -128,10 +137,13 @@ class RSCliCore:
         """Run the shell client program"""
         try:
             self.get_args()
-            self.main_event()
+            while True:
+                self.main_event()
+                sleep(self.args.reconnect * 60)
 
         except KeyboardInterrupt:
             print('\nExiting on KeyboardInterrupt')
+            exit(0)
 
 
 def main():
