@@ -55,48 +55,58 @@ class RSSrvCore:
         self.args = self.arg_parser.parse_args()
 
 
-    def main_event(self):
+    def main_event(self, force = self.args.force):
         """Connect to an incoming shell"""
-        with socket.socket() as s:
-            if self.args.force:
-                print('Enabling socket address reuse')
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            print('Binding to port ' + str(self.args.port))
-            s.bind(('0.0.0.0', self.args.port))
-            s.listen(1)
-            conn, host = s.accept()
-            print('Received connection from ' + str(host[0]) + \
-                    ':' + str(host[1]) + '.')
-            remotehost, remotepyversion = str(
-                    conn.recv(1024))[2:-1].split(':')
-            print('Remote hostname: ' + remotehost + '.\n' + \
-                    'Remote Python major version: ' + remotepyversion + '.')
-            remotepyversion = int(remotepyversion)
-            #print('Remote Python major version: ' + remotepyversion + '.')
-            print('Type exit or enter EOF (ctrl-d) to exit.')
-            while True:
-                try:
-                    cmd = input(remotehost + '$ ')
-                    if cmd == 'exit':
-                        conn.send(bytes(cmd, 'utf8'))
-                        conn.close()
-                        s.close()
-                        exit(0)
-                    else:
-                        conn.send(bytes(cmd, 'utf8'))
-                        recdata = conn.recv(16834)
-                        if remotepyversion == 2:
-                            if recdata and recdata != ':':
-                                stdout.buffer.write(recdata)
-                        else:
-                            if recdata and recdata != bytes('\n', 'utf8'):
-                                stdout.buffer.write(recdata)
-                except EOFError:
-                    conn.send(bytes('exit', 'utf8'))
-                    print('exit')
+        s = socket.socket()
+        if force:
+            print('Enabling socket address reuse')
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        print('Binding to port ' + str(self.args.port))
+        s.bind(('0.0.0.0', self.args.port))
+        s.listen(1)
+        conn, host = s.accept()
+        print('Received connection from ' + str(host[0]) + \
+                ':' + str(host[1]) + '.')
+        remotehost, remotepyversion = str(
+                conn.recv(1024))[2:-1].split(':')
+        print('Remote hostname: ' + remotehost + '.\n' + \
+                'Remote Python major version: ' + remotepyversion + '.')
+        remotepyversion = int(remotepyversion)
+        #print('Remote Python major version: ' + remotepyversion + '.')
+        print('Type exit or enter EOF (ctrl-d) to exit.')
+        while True:
+            try:
+                cmd = input(remotehost + '$ ')
+                if cmd == 'exit':
+                    conn.send(bytes(cmd, 'utf8'))
                     conn.close()
                     s.close()
                     exit(0)
+                elif cmd == 'drop':
+                    conn.send(bytes('exit', 'utf8'))
+                    conn.close()
+                    s.close()
+                    return 0
+                elif cmd = 'detach':
+                    conn.send(bytes(cmd, 'utf8'))
+                    conn.close()
+                    s.close()
+                    exit(0)
+                else:
+                    conn.send(bytes(cmd, 'utf8'))
+                    recdata = conn.recv(16834)
+                    if remotepyversion == 2:
+                        if recdata and recdata != ':':
+                            stdout.buffer.write(recdata)
+                    else:
+                        if recdata and recdata != bytes('\n', 'utf8'):
+                            stdout.buffer.write(recdata)
+            except EOFError:
+                conn.send(bytes('exit', 'utf8'))
+                print('exit')
+                conn.close()
+                s.close()
+                exit(0)
 
 
     def run_script(self):
@@ -104,8 +114,12 @@ class RSSrvCore:
         try:
             self.get_args()
             self.main_event()
+            while True:
+                self.main_event(force=True)
 
         except KeyboardInterrupt:
+            conn.close()
+            s.close()
             print('\nExiting on KeyboardInterrupt')
 
 
