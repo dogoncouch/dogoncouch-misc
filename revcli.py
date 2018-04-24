@@ -94,6 +94,8 @@ class RSCliCore:
                 if self.args.verbose:
                     print(cmd)
                 if cmd == 'exit':
+                    if self.args.verbose:
+                        print('Exiting.')
                     s.close()
                     exit(0)
                 elif cmd == 'detach':
