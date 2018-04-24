@@ -55,17 +55,18 @@ optional arguments:
 Sends a reverse shell to a server running revsrv.py.
 
 ```
-usage: revcli.py [-h] [--version] [--verbose] host port
+usage: revcli.py [-h] [--version] [--verbose] [-k] [-r INTERVAL] host port
 
 positional arguments:
-  host        set the remote host
-  port        set the remote port
+  host         set the remote host
+  port         set the remote port
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --version   show program's version number and exit
-  --verbose   enable terminal output
-  -k          send keepalive packets every 90 seconds
+  -h, --help   show this help message and exit
+  --version    show program's version number and exit
+  --verbose    enable terminal output
+  -k           send keepalive packets every 90 seconds
+  -r INTERVAL  reconnect interval in minutes
 ```
 
 ### geofind.py

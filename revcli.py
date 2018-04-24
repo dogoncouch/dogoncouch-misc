@@ -56,7 +56,7 @@ class RSCliCore:
                 help = ('send keepalive packets every 90 seconds'))
         self.arg_parser.add_argument('-r',
                 action = 'store', type=int,
-                dest = 'reconnect', metavar = 'INTERVAL'
+                dest = 'reconnect', metavar = 'INTERVAL',
                 help = ('reconnect interval in minutes'))
         self.arg_parser.add_argument('host',
                 action = 'store',
@@ -99,6 +99,7 @@ class RSCliCore:
                 elif cmd == 'detach':
                     if self.args.verbose:
                         print('Detaching.')
+                    s.close()
                     return 0
                 else:
                     try:
