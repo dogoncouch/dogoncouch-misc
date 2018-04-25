@@ -62,7 +62,7 @@ optional arguments:
 ```
 
 ## geofind.py
-Prints GeoIP information on a hostname or IP address. Requirements: geoip-python.
+Prints GeoIP information on a hostname or IP address. Requirements: GeoIP.
 
 ```
 usage: geofind.py [-h] [--version] [-f] [--data DATA] [HOST [HOST ...]]
