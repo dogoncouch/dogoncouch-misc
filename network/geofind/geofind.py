@@ -113,9 +113,4 @@ def main():
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    
-    if args.full:
-        lookup(args.hosts, args.data)
-    else:
-        lookup_short(args.hosts, args.data)
+    main()
