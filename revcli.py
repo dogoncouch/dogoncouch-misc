@@ -59,7 +59,7 @@ class RSCliCore:
         self.arg_parser.add_argument('-r',
                 action = 'store', type=int, default = 5,
                 dest = 'reconnect', metavar = 'INTERVAL',
-                help = ('reconnect interval in minutes'))
+                help = ('reconnect interval in minutes (default 5)'))
         self.arg_parser.add_argument('host',
                 action = 'store',
                 help = ('set the remote host'))

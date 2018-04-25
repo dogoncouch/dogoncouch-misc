@@ -66,7 +66,7 @@ optional arguments:
   --version    show program's version number and exit
   --verbose    enable terminal output
   -k           send keepalive packets every 90 seconds
-  -r INTERVAL  reconnect interval in minutes
+  -r INTERVAL  reconnect interval in minutes (default 5)
 ```
 
 ### geofind.py
