@@ -118,7 +118,7 @@ class RSCliCore:
                         if self.pyversion == 2:
                             output = 'Error: Directory' + \
                                     cmd[3:] + ' does not exist or ' + \
-                                    'permission denied.\n', 'utf8'
+                                    'permission denied.\n'
                         else:
                             output = bytes('Error: Directory' + \
                                     cmd[3:] + ' does not exist or ' + \
