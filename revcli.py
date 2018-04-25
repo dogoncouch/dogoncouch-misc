@@ -26,6 +26,7 @@ from argparse import ArgumentParser
 import socket
 from sys import exit, version_info
 from os import chdir
+from os.path import expanduser
 from subprocess import check_output, STDOUT, CalledProcessError
 from time import sleep
 from getpass import getuser
@@ -106,22 +107,26 @@ class RSCliCore:
                     s.close()
                     return 0
                 elif cmd.startswith('cd'):
+                    if cmd[3:]:
+                        newdir = cmd[3:]
+                    else:
+                        newdir = expanduser('~')
                     if self.args.verbose:
-                        print('Changing directory: ' + cmd[3:])
+                        print('Changing directory: ' + newdir)
                     try:
-                        chdir(cmd[3:])
+                        chdir(newdir)
                         if self.pyversion == 2:
                             s.send('\n')
                         else:
                             s.send(bytes('\n'))
                     except OSError:
                         if self.pyversion == 2:
-                            output = 'Error: Directory' + \
-                                    cmd[3:] + ' does not exist or ' + \
+                            output = 'Error: Directory ' + \
+                                    newdir + ' does not exist or ' + \
                                     'permission denied.\n'
                         else:
-                            output = bytes('Error: Directory' + \
-                                    cmd[3:] + ' does not exist or ' + \
+                            output = bytes('Error: Directory ' + \
+                                    newdir + ' does not exist or ' + \
                                     'permission denied.\n', 'utf8')
                         s.send(output)
                 else:
