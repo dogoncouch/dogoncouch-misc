@@ -72,7 +72,7 @@ class RSSrvCore:
         print('Remote hostname: ' + remotehost + '.\n' + \
                 'Remote Python major version: ' + remotepyversion + '.')
         remotepyversion = int(remotepyversion)
-        if remotehost.split('@') == 'root':
+        if remotehost.split('@')[0] == 'root':
             promptsuffix = ' # '
         else:
             promptsuffix = ' $ '
