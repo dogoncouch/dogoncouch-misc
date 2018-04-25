@@ -70,7 +70,8 @@ class RSSrvCore:
         remotehost, remotepyversion = str(
                 conn.recv(1024))[2:-1].split(':')
         print('Remote hostname: ' + remotehost + '.\n' + \
-                'Remote Python major version: ' + remotepyversion + '.')
+                'Remote Python major version: ' + remotepyversion + \
+                '.\n Enter h for help.')
         remotepyversion = int(remotepyversion)
         if remotehost.split('@')[0] == 'root':
             promptsuffix = ' # '
@@ -95,6 +96,8 @@ class RSSrvCore:
                     conn.close()
                     s.close()
                     exit(0)
+                elif cmd == 'h':
+                    self.show_help()
                 else:
                     conn.send(bytes(cmd, 'utf8'))
                     recdata = conn.recv(16834)
@@ -110,6 +113,21 @@ class RSSrvCore:
                 conn.close()
                 s.close()
                 exit(0)
+
+
+    def show_help():
+        """Show help for shell options"""
+        h = []
+        h.append('\n=== Help ===\n')
+        h.append('Command       Description')
+        h.append('-----------------------------')
+        h.append('h             show this help menu')
+        h.append('exit          close program (local and remote)')
+        h.append('drop          close shell, keep server running')
+        h.append('detach        close shell, keep client running')
+        h.append('')
+
+        print('\n'.join(h))
 
 
     def run_script(self):
