@@ -1,5 +1,5 @@
 # dogoncouch-misc
-Miscellany
+Miscellany.
 
 ## Index
 - [Network](network/) - Network related scripts.
