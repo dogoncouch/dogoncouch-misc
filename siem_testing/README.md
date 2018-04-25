@@ -1,5 +1,5 @@
 # dogoncouch-misc/siem\_testing
-SIEM testing 
+SIEM testing scripts.
 
 ## Index
 - [logflood.py](#logfloodpy) - Floods log files using old log events with new date stamps.

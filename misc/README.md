@@ -3,8 +3,8 @@ Very miscellaneous.
 
 ## Index
   - [html-gen.py](#html-genpy) - Creates HTML files for directories full of pictures or other files.
-  - [fix-newlines.py](#fix-newlinespy) - Switches newlines in a file between \r and \n.
   - [clean-fixtures.py](#clean-fixturespy) - Removes primary keys from django fixtures.
+  - [fix-newlines.py](#fix-newlinespy) - Switches newlines in a file between \r and \n.
 
 ## html-gen.py
 Creates HTML files for directories full of pictures or other files by combining a starter HTML file, the filename, and an ender HTML file. Can also create files one at a time based on CLI input.
@@ -27,6 +27,20 @@ optional arguments:
   --endhtml FILE    set the ending HTML file (default: ender.html)
 ```
 
+## clean-fixtures.py
+Removes primary keys from django fixtures.
+
+```
+usage: clean-fixtures.py [-h] [--version] [FILE [FILE ...]]
+
+positional arguments:
+  FILE        set a file from which to erase primary keys
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+```
+
 ## fix-newlines.py
 Switches newlines in a file between \r and \n. Mostly written for people who don't have access to GNU sed.
 
@@ -43,18 +57,4 @@ optional arguments:
   -i          replace newlines in-place
   --reverse   replace *nix newlines with windows newlines
   --out OUT   set an output file
-```
-
-## clean-fixtures.py
-Removes primary keys from django fixtures.
-
-```
-usage: clean-fixtures.py [-h] [--version] [FILE [FILE ...]]
-
-positional arguments:
-  FILE        set a file from which to erase primary keys
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --version   show program's version number and exit
 ```
