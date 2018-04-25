@@ -108,20 +108,35 @@ class RSCliCore:
                 elif cmd.startswith('cd'):
                     if self.args.verbose:
                         print('Changing directory: ' + cmd[3:])
-                    chdir(cmd[3:])
+                    try:
+                        chdir(cmd[3:])
+                        if self.pyversion == 2:
+                            s.send('\n')
+                        else:
+                            s.send(bytes('\n'))
+                    except OSError:
+                        if self.pyversion == 2:
+                            output = 'Error: Directory' + \
+                                    cmd[3:] + ' does not exist or ' + \
+                                    'permission denied.\n', 'utf8'
+                        else:
+                            output = bytes('Error: Directory' + \
+                                    cmd[3:] + ' does not exist or ' + \
+                                    'permission denied.\n', 'utf8')
+                        s.send(output)
                 else:
                     try:
-                        procoutput = check_output(cmd, shell = True,
+                        output = check_output(cmd, shell = True,
                                 stderr=STDOUT)
                     except CalledProcessError:
                         if self.pyversion == 2:
-                            procoutput = 'Error: ' + cmd + \
+                            output = 'Error: ' + cmd + \
                                     ' returned non-zero exit code.\n'
                         else:
-                            procoutput = bytes('Error: ' + cmd + \
+                            output = bytes('Error: ' + cmd + \
                                     ' returned non-zero exit code.\n', 'utf8')
-                    if procoutput:
-                        s.send(procoutput)
+                    if output:
+                        s.send(output)
                     else:
                         if self.pyversion == 2:
                             s.send('\n')
