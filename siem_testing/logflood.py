@@ -122,13 +122,13 @@ class LogFloodCore:
         """Print a summary"""
         runtime = datetime.now() - self.starttime
         print('Wrote ' + str(self.eventcount) + ' events in ' + \
-                str(runtime.days) + 'days, '+ \
+                str(runtime.days) + ' days, '+ \
                 str(int(runtime.total_seconds() // 60 // 60)) + \
-                'hours, ' + \
+                ' hours, ' + \
                 str(int(runtime.total_seconds() // 60 % 60)) + \
-                'minutes, ' + \
+                ' minutes, ' + \
                 str(int(runtime.total_seconds() % 60 % 60)) + \
-                'seconds.\nAverage ' + str(int(
+                ' seconds.\nAverage ' + str(int(
                     self.eventcount / runtime.total_seconds())) + \
                             ' events per second.')
 

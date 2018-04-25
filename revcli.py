@@ -76,7 +76,8 @@ class RSCliCore:
             s.connect((self.args.host, self.args.port))
         except ConnectionRefusedError:
             if self.args.verbose:
-                print('Error: Connection refused for host '+ self.args.host + \
+                print('Error: Connection refused for host '+ \
+                        self.args.host + \
                         ' port ' + str(self.args.port) + '.')
             return 0
         if self.pyversion == 2:
