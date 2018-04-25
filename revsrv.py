@@ -71,7 +71,7 @@ class RSSrvCore:
                 conn.recv(1024))[2:-1].split(':')
         print('Remote hostname: ' + remotehost + '.\n' + \
                 'Remote Python major version: ' + remotepyversion + \
-                '.\n Enter h for help.')
+                '.\nEnter h for help.')
         remotepyversion = int(remotepyversion)
         if remotehost.split('@')[0] == 'root':
             promptsuffix = ' # '
@@ -115,16 +115,16 @@ class RSSrvCore:
                 exit(0)
 
 
-    def show_help():
+    def show_help(self):
         """Show help for shell options"""
         h = []
-        h.append('\n=== Help ===\n')
-        h.append('Command       Description')
+        h.append('\nCommand     Description')
         h.append('-----------------------------')
         h.append('h             show this help menu')
         h.append('exit          close program (local and remote)')
         h.append('drop          close shell, keep server running')
         h.append('detach        close shell, keep client running')
+        h.append('cd DIR        change directory')
         h.append('')
 
         print('\n'.join(h))
@@ -139,8 +139,6 @@ class RSSrvCore:
                 self.main_event(force=True)
 
         except KeyboardInterrupt:
-            conn.close()
-            s.close()
             print('\nExiting on KeyboardInterrupt')
 
 

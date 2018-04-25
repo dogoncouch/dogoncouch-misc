@@ -52,12 +52,12 @@ class LogFloodCore:
                 help = ('exit after N events'))
         self.arg_parser.add_argument('-p',
                 action = 'store', type=int,
-                dest = 'sleepcount', metavar = 'N', default = 100,
-                help = ('pause every N events (default 100)'))
+                dest = 'sleepcount', metavar = 'N', default = 10,
+                help = ('pause every N events (default 10)'))
         self.arg_parser.add_argument('-t',
                 action = 'store', type = float,
-                dest = 'sleeptime', metavar = 'S.F', default = 0.1,
-                help = ('set length of pause in seconds (default 0.1)'))
+                dest = 'sleeptime', metavar = 'S.F', default = 0.01,
+                help = ('set length of pause in seconds (default 0.01)'))
         self.arg_parser.add_argument('files',
                 action = 'store', metavar='FILE', nargs = '+',
                 help = ('set a log file to flood'))

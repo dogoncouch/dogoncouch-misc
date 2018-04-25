@@ -25,6 +25,7 @@
 from argparse import ArgumentParser
 import socket
 from sys import exit, version_info
+from os import chdir
 from subprocess import check_output, STDOUT, CalledProcessError
 from time import sleep
 from getpass import getuser
@@ -103,6 +104,10 @@ class RSCliCore:
                         print('Detaching.')
                     s.close()
                     return 0
+                elif cmd.startswith('cd'):
+                    if self.args.verbose:
+                        print('Changing directory: ' + cmd[3:])
+                    chdir(cmd[3:])
                 else:
                     try:
                         procoutput = check_output(cmd, shell = True,
