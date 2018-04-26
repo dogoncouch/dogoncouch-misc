@@ -118,7 +118,7 @@ class RSCliCore:
                         if self.pyversion == 2:
                             s.send('\n')
                         else:
-                            s.send(bytes('\n'))
+                            s.send(bytes('\n', 'utf8'))
                     except OSError:
                         if self.pyversion == 2:
                             output = 'Error: Directory ' + \
@@ -129,6 +129,11 @@ class RSCliCore:
                                     newdir + ' does not exist or ' + \
                                     'permission denied.\n', 'utf8')
                         s.send(output)
+                elif cmd == '\\n':
+                    if self.pyversion == 2:
+                        s.send('\n')
+                    else:
+                        s.send(bytes('\n', 'utf8'))
                 else:
                     try:
                         output = check_output(cmd, shell = True,
@@ -139,7 +144,8 @@ class RSCliCore:
                                     ' returned non-zero exit code.\n'
                         else:
                             output = bytes('Error: ' + cmd + \
-                                    ' returned non-zero exit code.\n', 'utf8')
+                                    ' returned non-zero exit code.\n',
+                                    'utf8')
                     if output:
                         s.send(output)
                     else:

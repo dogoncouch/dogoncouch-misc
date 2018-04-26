@@ -81,6 +81,10 @@ class RSSrvCore:
         while True:
             try:
                 cmd = input(remotehost + promptsuffix)
+                if cmd == '!':
+                    cmd = lastcmd
+                elif cmd == '':
+                    cmd = '\n'
                 if cmd == 'exit':
                     conn.send(bytes(cmd, 'utf8'))
                     conn.close()
@@ -107,6 +111,7 @@ class RSSrvCore:
                     else:
                         if recdata and recdata != bytes('\n', 'utf8'):
                             stdout.buffer.write(recdata)
+                lastcmd = cmd
             except EOFError:
                 conn.send(bytes('exit', 'utf8'))
                 print('exit')
